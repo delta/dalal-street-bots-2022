@@ -1,5 +1,7 @@
 <div id="top"></div>
+
 # Dalal-Street-Bots 2022
+
  ## Getting Started
  ### Prerequisites
  - Python 3.9 [Download Link](https://www.python.org/downloads/)
@@ -28,7 +30,7 @@
 - Development
 
 ```sh
-    uvicorn main.py
+  uvicorn main.py
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -38,8 +40,8 @@
 - Run the following scripts before giving a PR
 
 ```sh
-    ./server/scripts/lint.sh
-    ./server/scripts/format.sh
+  ./server/scripts/lint.sh
+  ./server/scripts/format.sh
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
