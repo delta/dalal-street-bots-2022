@@ -9,14 +9,14 @@ python = "^3.9"
 fastapi = "^0.70.1"
 uvicorn = "^0.16.0"
 pydantic = "^1.9.0"
-mypy = "^0.930"
-flake8 = "^4.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 isort = "^5.10.1"
 black = "^21.12b0"
 autoflake = "^1.4"
+flake8 = "^4.0.1"
+mypy = "^0.930"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
