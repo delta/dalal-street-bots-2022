@@ -1,0 +1,3 @@
+[submodule "server/proto"]
+	path = server/proto
+	url = git@github.com:delta/dalal-street-proto.git
