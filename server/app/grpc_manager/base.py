@@ -3,6 +3,8 @@ import os
 import grpc
 import proto_build.DalalMessage_pb2_grpc as DalalMessage_pb2_grpc
 
+from ..core.config import GRPC_SERVER_URI
+
 
 class GrpcManager:
     """This Class coordinates all the communication between our grpc-server and bots"""
@@ -14,7 +16,7 @@ class GrpcManager:
             cert = open(path).read().encode("utf8")
             creds = grpc.ssl_channel_credentials(cert)
             channel = grpc.secure_channel(
-                "localhost:8000",
+                GRPC_SERVER_URI,
                 creds,
                 options=(
                     (
