@@ -20,6 +20,17 @@ autoflake = "^1.4"
 flake8 = "^4.0.1"
 mypy = "^0.930"
 
+[tool.black]
+line-length = 88
+target-version = ['py36', 'py37', 'py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # The following are specific to Black, you probably don't want those.
+  | app/proto_build
+)/
+'''
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

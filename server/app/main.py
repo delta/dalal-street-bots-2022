@@ -1,6 +1,6 @@
-import grpc
-import proto_build.DalalMessage_pb2_grpc as DalalMessage_pb2_grpc
-from proto_build.actions.Login_pb2 import LoginRequest
+import grpc  # type: ignore
+import proto_build.DalalMessage_pb2_grpc as DalalMessage_pb2_grpc  # type: ignore
+from proto_build.actions.Login_pb2 import LoginRequest  # type: ignore
 
 # app = FastAPI()
 
