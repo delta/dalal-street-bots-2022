@@ -28,10 +28,5 @@ class GrpcManager:
             self.action_stub = DalalMessage_pb2_grpc.DalalActionServiceStub(channel)
             self.stream_stub = DalalMessage_pb2_grpc.DalalStreamServiceStub(channel)
 
-            # test to see if we are able to ping the server
-            # TODO: create a ping method in server to test if the connection is working
-            # login_req = LoginRequest(email="bot", password="bot")
-            # login_res = self.action_stub.Login(login_req)
-            # print("login response", login_res)
         except Exception as e:
             print("err : ", e)
