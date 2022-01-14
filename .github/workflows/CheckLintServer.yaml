@@ -39,8 +39,8 @@ jobs:
       - name: Install dependencies
         if: steps.cache-dev-deps.outputs.cache-hit != 'true'
         run: |
-          poetry config virtualenvs.in-project true
           cd ./server
+          poetry config virtualenvs.in-project true
           poetry install
 
       - name: Run linters
