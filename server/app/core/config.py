@@ -14,4 +14,6 @@ PORT = (
     if config.get("PORT") != None and config.get("PORT").isdigit()
     else 8001
 )
+# TODO: it would be nice if we add some check to see
+# if the env contains "http" or "https", and throw an error
 GRPC_SERVER_URI = config.get("PORT", "localhost:8000")

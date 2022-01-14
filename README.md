@@ -25,11 +25,18 @@
 ```
 
 - Backend setup
+  - Installing dependencies
 
 ```sh
    cd server
    poetry install
    poetry shell
+```
+
+- Creating env
+
+```sh
+  cp .env.example .env
 ```
 
 - Generate Proto files
