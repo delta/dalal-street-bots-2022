@@ -40,6 +40,7 @@ jobs:
         if: steps.cache-dev-deps.outputs.cache-hit != 'true'
         run: |
           poetry config virtualenvs.in-project true
+          cd ./server
           poetry install
 
       - name: Run linters
