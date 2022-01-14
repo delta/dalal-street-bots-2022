@@ -7,7 +7,7 @@ class GrpcManager:
 
     def __init__(self) -> None:
         try:
-            cert = open("grpc-server.crt").read().encode("utf8")
+            cert = open("../grpc-server.crt").read().encode("utf8")
             creds = grpc.ssl_channel_credentials(cert)
             channel = grpc.secure_channel(
                 "localhost:8000",
@@ -20,5 +20,6 @@ class GrpcManager:
                 ),
             )
             self.action_stub = DalalMessage_pb2_grpc.DalalActionServiceStub(channel)
+            self.stream_stub = DalalMessage_pb2_grpc.DalalStreamServiceStub(channel)
         except Exception as e:
             print("err : ", e)
