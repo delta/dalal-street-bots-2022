@@ -2,10 +2,12 @@
 
 # Dalal-Street-Bots 2022
 
- ## Getting Started
- ### Prerequisites
- - Python 3.9 [Download Link](https://www.python.org/downloads/)
- - Poetry [Download Link](https://python-poetry.org/docs/#installation)
+## Getting Started
+
+### Prerequisites
+
+- Python 3.9 [Download Link](https://www.python.org/downloads/)
+- Poetry [Download Link](https://python-poetry.org/docs/#installation)
 
 ### Installation
 
@@ -15,12 +17,33 @@
    git clone git@github.com:delta/dalal-street-bots-2022.git
 ```
 
+- Setup submodules
+
+```git
+  git submodule init
+  git submodule update
+```
+
 - Backend setup
 
+  - Installing dependencies
+
+  ```sh
+    cd server
+    poetry install
+    poetry shell
+  ```
+
+  - Creating env
+
+  ```sh
+    cp .env.example .env
+  ```
+
+- Generate Proto files
+
 ```sh
-   cd server
-   poetry install
-   poetry shell
+  ./server/scripts/build_proto.sh
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -30,7 +53,7 @@
 - Development
 
 ```sh
-  uvicorn main.py
+  python main.py
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
