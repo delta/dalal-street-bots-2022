@@ -10,7 +10,7 @@ class GrpcManager:
     def __init__(self) -> None:
         try:
             dir_path = os.path.dirname(os.path.realpath(__file__))
-            path = dir_path + "/../../grpc-server.crt"
+            path = dir_path + "/../../certs/grpc-server.crt"
             cert = open(path).read().encode("utf8")
             creds = grpc.ssl_channel_credentials(cert)
             channel = grpc.secure_channel(
