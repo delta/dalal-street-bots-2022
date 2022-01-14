@@ -1,32 +1,20 @@
-import grpc  # type: ignore
-import proto_build.DalalMessage_pb2_grpc as DalalMessage_pb2_grpc  # type: ignore
-from proto_build.actions.Login_pb2 import LoginRequest  # type: ignore
+from typing import Any
 
-# app = FastAPI()
+import uvicorn
+from fastapi import FastAPI
+from grpc_manager.base import GrpcManager
+
+app = FastAPI()
 
 
 if __name__ == "__main__":
-    print("Trying to connect with grpc")
-    try:
-        cert = open("grpc-server.crt").read().encode("utf8")
-        creds = grpc.ssl_channel_credentials(cert)
-        channel = grpc.secure_channel(
-            "localhost:8000",
-            creds,
-            options=(
-                (
-                    "grpc.ssl_target_name_override",
-                    "localhost",
-                ),
-            ),
-        )
-        action_stub = DalalMessage_pb2_grpc.DalalActionServiceStub(channel)
-        login_req = LoginRequest(email="bot", password="bot")
-        login_res = action_stub.Login(login_req)
-        print("got the resp : ", login_res)
-    except Exception as e:
-        print("err : ", e)
+    grpc_manager = GrpcManager()
+    uvicorn.run("main:app", host="0.0.0.0")
 
-# @app.get("/")
-# def read_root():
-#     return {"Dalal": "ToTheMoon"}
+app = FastAPI(debug=True)
+
+
+@app.get("/")
+async def read_root() -> Any:
+    # TODO: fix return type
+    return {"Dalal": "ToTheMoon"}
