@@ -45,7 +45,7 @@
 - Development
 
 ```sh
-  app main.py
+  python main.py
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
