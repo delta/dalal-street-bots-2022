@@ -45,6 +45,7 @@
 ```sh
   ./server/scripts/build_proto.sh
 ```
+- Refer [here](https://github.com/delta/dalal-street-bots-2022/tree/main/client#readme) for client setup
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
