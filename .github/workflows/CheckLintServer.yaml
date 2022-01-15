@@ -45,6 +45,6 @@ jobs:
 
       - name: Run linters
         run: |
-        var=$(pwd)
-        echo "$var"
-        .server/scripts/lint
+          var=$(pwd)
+          echo "$var"
+          .server/scripts/lint
