@@ -18,11 +18,7 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Update submodules
-        run: |
-          git submodule init
-          git submodule update --recursive
+          submodules: recursive
 
       - name: move to server
         run: cd ./server
@@ -47,6 +43,9 @@ jobs:
           cd ./server
           poetry config virtualenvs.in-project true
           poetry install
+
+      - name: Generate Proto Stub Files
+        run: ./server/scripts/build_proto.sh
 
       - name: Run linters
         run: |
