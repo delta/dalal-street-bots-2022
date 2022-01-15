@@ -1,4 +1,9 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+# cd into the server dir
+SCRIPT=$(readlink -f "$0")
+cd "$(dirname "$SCRIPT")/../"
+
 
 # cd into the server dir
 SCRIPT=$(readlink -f "$0")

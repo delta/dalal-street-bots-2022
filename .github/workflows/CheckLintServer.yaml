@@ -1,0 +1,59 @@
+name: Lint-Server
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Lint code
+
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: ${{ matrix.python-version }}
+          submodules: recursive
+
+      - name: move to server
+        run: cd ./server
+
+      - name: Install poetry
+        run: pip install poetry==1.1
+
+      - uses: actions/cache@v2.1.6
+        id: cache-dev-deps
+        with:
+          path: ./server/.venv
+          key: venv-dev-${{ runner.os }}-py-${{ matrix.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
+          restore-keys: |
+            venv-dev-${{ runner.os }}-py-${{ matrix.python-version }}-poetry-
+            venv-dev-${{ runner.os }}-py-${{ matrix.python-version }}-
+            venv-dev-${{ runner.os }}-py-
+            venv-dev-${{ runner.os }}-
+
+      - name: Install dependencies
+        if: steps.cache-dev-deps.outputs.cache-hit != 'true'
+        run: |
+          cd ./server
+          poetry config virtualenvs.in-project true
+          poetry install
+
+      - name: Generate Proto Stub Files
+        run: ./server/scripts/build_proto.sh
+
+      - name: Run linters
+        run: |
+          cd ./server
+          echo "y" | poetry run ./scripts/lint.sh
