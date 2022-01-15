@@ -55,4 +55,4 @@ jobs:
       - name: Run linters
         run: |
           cd ./server
-          poetry run ./scripts/lint.sh
+          echo "y" | poetry run ./scripts/lint.sh
