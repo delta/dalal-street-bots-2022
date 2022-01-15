@@ -44,4 +44,7 @@ jobs:
           poetry install
 
       - name: Run linters
-        run: ./scripts/lint
+        run: |
+        var=$(pwd)
+        echo "$var"
+        .server/scripts/lint
