@@ -48,6 +48,7 @@ jobs:
         run: |
           var=$(pwd)
           echo "current dir: $var"
+          ls ./server/scripts 
           ./server/scripts/build_proto.sh
 
       - name: Run linters
