@@ -2,7 +2,6 @@ import os
 
 import grpc
 import proto_build.DalalMessage_pb2_grpc as DalalMessage_pb2_grpc
-
 from core.config import GRPC_SERVER_URI
 
 

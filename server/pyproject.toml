@@ -20,6 +20,19 @@ black = "^21.12b0"
 autoflake = "^1.4"
 flake8 = "^4.0.1"
 mypy = "^0.930"
+types-orjson = "^3.6.2"
+types-ujson = "^4.2.1"
+
+[tool.black]
+line-length = 88
+target-version = ['py36', 'py37', 'py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # The following are specific to Black, you probably don't want those.
+  | app/proto_build
+)/
+'''
 
 [tool.black]
 line-length = 88

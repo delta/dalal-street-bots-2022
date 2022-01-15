@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # cd into the server dir
 SCRIPT=$(readlink -f "$0")
