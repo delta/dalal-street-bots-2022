@@ -1,6 +1,12 @@
 name: Lint-Server
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   lint:
@@ -45,12 +51,7 @@ jobs:
           poetry install
 
       - name: Generate Proto Stub Files
-        run: |
-          var=$(pwd)
-          echo "current dir: $var"
-          ls ./server/scripts
-          cat ./server/scripts/build_proto.sh
-          ./server/scripts/build_proto.sh
+        run: ./server/scripts/build_proto.sh
 
       - name: Run linters
         run: |
