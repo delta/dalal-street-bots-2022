@@ -28,7 +28,7 @@ jobs:
       - uses: actions/cache@v2.1.6
         id: cache-dev-deps
         with:
-          path: .venv
+          path: ./server/.venv
           key: venv-dev-${{ runner.os }}-py-${{ matrix.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
           restore-keys: |
             venv-dev-${{ runner.os }}-py-${{ matrix.python-version }}-poetry-
