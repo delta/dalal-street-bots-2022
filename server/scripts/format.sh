@@ -11,3 +11,4 @@ set -e
 ./.venv/bin/autoflake --recursive --remove-all-unused-imports --remove-unused-variables \
     --in-place app tests  --exclude ./app/proto_build/
 ./.venv/bin/black app tests
+./.venv/bin/isort app --gitignore
