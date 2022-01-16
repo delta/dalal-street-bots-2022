@@ -6,11 +6,11 @@ Create Date: 2022-01-17 01:28:09.873809
 
 """
 import enum
-from alembic import op
+
 import sqlalchemy as sa
+from alembic import op
 
 from app.db.migrations.helper import timestamps
-
 
 # revision identifiers, used by Alembic.
 revision = "976573dc98f2"
@@ -45,10 +45,8 @@ def upgrade():
         ),
         *timestamps(),
     )
-    pass
 
 
 def downgrade():
     print("running down migrations for create logs table")
     op.drop_table("logs")
-    pass
