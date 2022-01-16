@@ -21,4 +21,11 @@ PORT = convertToInt("PORT", 8001)
 
 # TODO: it would be nice if we add some check to see
 # if the env contains "http" or "https", and throw an error
-GRPC_SERVER_URI = config.get("PORT", "localhost:8000")
+GRPC_SERVER_URI = config.get("GRPC_SERVER_URI", "localhost:8000")
+
+DB_NAME = config.get("DB_NAME", "dalal_street_bots")
+DB_PWD = config.get("DB_PWD", "password")
+DB_USER = config.get("DB_USER", "user")
+DB_HOST = config.get("DB_HOST", "0.0.0.0")
+
+DB_URI = f"mariadb://{DB_USER}:{DB_PWD}@{DB_HOST}/{DB_NAME}"
