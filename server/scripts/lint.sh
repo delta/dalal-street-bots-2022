@@ -19,7 +19,9 @@ set -x
                     --exclude 'app/proto_build/actions'\
                     --exclude 'app/proto_build/datastreams'\
                     --exclude 'app/proto_build/DalalMessage_pb2_grpc.py'\
-                    --exclude 'app/proto_build/DalalMessage_pb2.py'
+                    --exclude 'app/proto_build/DalalMessage_pb2.py' \
+                    --exclude 'app/db/migrations/versions'
+
 
 ./.venv/bin/black --check app --diff
 ./.venv/bin/isort --check-only app --gitignore

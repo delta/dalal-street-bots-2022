@@ -34,18 +34,38 @@
     poetry shell
   ```
 
-  - Creating env
+  - Creating env and add respective values
 
   ```sh
     cp .env.example .env
   ```
 
-- Generate Proto files
+  - Creating a database and running migrations
+
+  ```sh
+    mysql -u root -p -e "CREATE DATABASE dalalstreet_bots;"
+    alembic upgrade head
+  ```
+
+  - Generate Proto files
+
+  ```sh
+    ./scripts/build_proto.sh
+  ```
+
+- Refer [here](https://github.com/delta/dalal-street-bots-2022/tree/main/client#readme) for client setup
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+### Creating migrations
+
+- To create a migration run the command
 
 ```sh
-  ./server/scripts/build_proto.sh
+    alembic revision -m <MIGRATION_NAME>
 ```
-- Refer [here](https://github.com/delta/dalal-street-bots-2022/tree/main/client#readme) for client setup
+
+- **Note**: Give a proper name for the migration _type_description_of_migration_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -53,9 +73,17 @@
 
 - Development
 
-```sh
-  python main.py
-```
+  - To start the server run
+
+  ```sh
+    python ./server/app/main.py
+  ```
+
+  - To start client run
+
+  ```sh
+    cd client && npm run start
+  ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
