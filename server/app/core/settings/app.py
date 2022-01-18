@@ -16,7 +16,7 @@ class AppSettings(BaseAppSettings):
     redoc_url: str = "/redoc"
     title: str = "Dalal Street Bots"
 
-    grpc_server_uri: HttpUrl = "https://localhost:8000"
+    grpc_server_uri: HttpUrl = HttpUrl(url="https://localhost:8000")
 
     def fastapi_kwargs(self) -> Dict[str, Any]:
         return {

@@ -1,5 +1,7 @@
-from pydantic import BaseSettings, validator, Field
 from enum import Enum
+
+from pydantic import BaseSettings, Field, validator
+
 from .database import DatabaseDsn
 
 
@@ -14,11 +16,11 @@ class BaseAppSettings(BaseSettings):
 
     app_env: AppEnvTypes = AppEnvTypes.prod
 
-    db: DatabaseDsn = Field(DatabaseDsn(_env_file=".env"))
+    db: DatabaseDsn = Field(DatabaseDsn(_env_file=".env"))  # type: ignore
 
     @validator("app_env", pre=True)
-    def check_if_valid_value(cls, v):
-        if not v in AppEnvTypes._value2member_map_:
+    def check_if_valid_value(cls, v: AppEnvTypes) -> AppEnvTypes:
+        if v not in AppEnvTypes._value2member_map_:
             # setting it to prod so that forgetting to set APP_ENV
             # doesn't cause any vulnerabilities
             print('Not a valid app_env provided, setting it to "prod" by default')

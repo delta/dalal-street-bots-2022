@@ -8,4 +8,4 @@ class DevAppSettings(AppSettings):
     reload: bool = True
     title: str = "Dalal Street Bots - Dev"
 
-    grpc_server_uri: AnyHttpUrl = Field(...)
+    grpc_server_uri: AnyHttpUrl = Field(...)  # type: ignore

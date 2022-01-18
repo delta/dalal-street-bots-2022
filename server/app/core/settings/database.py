@@ -1,7 +1,7 @@
-from typing import Any, Optional, Dict
 import re
+from typing import Any, Dict, Optional
 
-from pydantic import AnyUrl, BaseSettings, root_validator, Field, create_model
+from pydantic import AnyUrl, BaseSettings, create_model, root_validator
 
 from ..utils import find_if_given_keys_exist_in_dict
 
@@ -16,7 +16,7 @@ class MySqlDsn(AnyUrl):
     }
     user_required = True
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore
         super().__init__(*args, **kwargs)
         if self.path:
             # we add the db name to the MySqlDsn if it exists
@@ -62,7 +62,7 @@ class DatabaseDsn(BaseSettings):
             values.__setitem__("name", values.__getitem__("uri").name)
 
         elif isIndividualKeysPresent:
-            uri = f"{values.__getitem__('scheme')}://{values.__getitem__('user')}:{values.__getitem__('pwd')}@\{values.__getitem__('host')}/{values.__getitem__('name')}"
+            uri = "{scheme}://{user}:{pwd}@{host}/{name}".format_map(values)
             # TODO: There must be a cleaner way to do this
             x = create_model(
                 "MySqlDsn",
@@ -83,9 +83,7 @@ class DatabaseDsn(BaseSettings):
             values.__setitem__("uri", x)
         else:
             print("All the values", values)
-            raise ValueError(
-                "Database details not provided. Make sure you have provided all the details"
-            )
+            raise ValueError("Database details not provided.")
 
         return values
 

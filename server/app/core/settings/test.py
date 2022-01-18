@@ -2,15 +2,13 @@ from pydantic import AnyHttpUrl, Field
 
 from .app import AppSettings
 
-from .database import DatabaseDsn
-
 
 class TestAppSettings(AppSettings):
     debug: bool = True
     reload: bool = True
-    title: bool = "Dalal Street Bots - Test"
+    title: str = "Dalal Street Bots - Test"
 
-    grpc_server_uri: AnyHttpUrl = Field(...)
+    grpc_server_uri: AnyHttpUrl = Field(...)  # type: ignore
 
     # db: DatabaseDsn = Field(DatabaseDsn(_env_file="test.env"))
 
