@@ -1,17 +1,22 @@
 from typing import Any, Dict
 
-from base import BaseAppSettings
+from pydantic import HttpUrl
+
+from .base import BaseAppSettings
 
 
 class AppSettings(BaseAppSettings):
     debug: bool = False
     reload: bool = False
+    port: int = 8000
 
     docs_url: str = "/docs"
     openapi_prefix: str = ""
     openapi_url: str = "/openapi.json"
     redoc_url: str = "/redoc"
     title: str = "Dalal Street Bots"
+
+    grpc_server_uri: HttpUrl = "https://localhost:8000"
 
     def fastapi_kwargs(self) -> Dict[str, Any]:
         return {

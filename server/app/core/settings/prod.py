@@ -1,6 +1,6 @@
 from pydantic import HttpUrl, Field
 
-from app import AppSettings
+from .app import AppSettings
 
 
 class ProdAppSettings(AppSettings):

@@ -82,11 +82,11 @@ class DatabaseDsn(BaseSettings):
             )
             values.__setitem__("uri", x)
         else:
+            print("All the values", values)
             raise ValueError(
                 "Database details not provided. Make sure you have provided all the details"
             )
 
-        print("All the values", values)
         return values
 
     class Config:

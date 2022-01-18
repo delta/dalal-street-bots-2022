@@ -1,6 +1,8 @@
 from pydantic import AnyHttpUrl, Field
 
-from app import AppSettings
+from .app import AppSettings
+
+from .database import DatabaseDsn
 
 
 class TestAppSettings(AppSettings):
@@ -9,6 +11,8 @@ class TestAppSettings(AppSettings):
     title: bool = "Dalal Street Bots - Test"
 
     grpc_server_uri: AnyHttpUrl = Field(...)
+
+    # db: DatabaseDsn = Field(DatabaseDsn(_env_file="test.env"))
 
     # Need to set the Log level to Debug
 
