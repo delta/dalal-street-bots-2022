@@ -1,7 +1,5 @@
 from typing import Any, Dict
 
-from pydantic import Field, HttpUrl
-
 from base import BaseAppSettings
 
 
@@ -14,8 +12,6 @@ class AppSettings(BaseAppSettings):
     openapi_url: str = "/openapi.json"
     redoc_url: str = "/redoc"
     title: str = "Dalal Street Bots"
-
-    grpc_server_uri: HttpUrl = Field(...)
 
     def fastapi_kwargs(self) -> Dict[str, Any]:
         return {
