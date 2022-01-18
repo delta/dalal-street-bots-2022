@@ -1,5 +1,6 @@
-from pydantic import BaseSettings, validator
+from pydantic import BaseSettings, validator, Field
 from enum import Enum
+from .database import DatabaseDsn
 
 
 class AppEnvTypes(Enum):
@@ -12,6 +13,8 @@ class BaseAppSettings(BaseSettings):
     """BaseSettings for the App"""
 
     app_env: AppEnvTypes = AppEnvTypes.prod
+
+    db: DatabaseDsn = Field(DatabaseDsn(_env_file=".env"))
 
     @validator("app_env", pre=True)
     def check_if_valid_value(cls, v):
