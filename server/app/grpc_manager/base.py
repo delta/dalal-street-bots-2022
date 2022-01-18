@@ -2,7 +2,7 @@ import os
 
 import grpc
 import proto_build.DalalMessage_pb2_grpc as DalalMessage_pb2_grpc
-from core.config import GRPC_SERVER_URI
+from core.config import get_app_settings
 
 
 class GrpcManager:
@@ -15,7 +15,7 @@ class GrpcManager:
             cert = open(path).read().encode("utf8")
             creds = grpc.ssl_channel_credentials(cert)
             channel = grpc.secure_channel(
-                GRPC_SERVER_URI,
+                get_app_settings().grpc_server_uri,
                 creds,
                 options=(
                     (
