@@ -1,7 +1,8 @@
 import re
 from typing import Any, Dict, Optional
 
-from pydantic import AnyUrl, BaseSettings, create_model, root_validator
+from pydantic import AnyUrl, BaseSettings, root_validator
+from pydantic.tools import parse_obj_as
 
 from ..utils import find_if_given_keys_exist_in_dict
 
@@ -43,11 +44,16 @@ class DatabaseDsn(BaseSettings):
     user: Optional[str]
     pwd: Optional[str]
     name: Optional[str]
+    port: Optional[int]
+
+    # min and max no of connections in our connection pool
+    min_connection_count: int = 10
+    max_connection_count: int = 10
 
     @root_validator(pre=False)
     def check_if_proper_url_is_provided(cls, values: Dict[str, Any]) -> Any:
         isIndividualKeysPresent = find_if_given_keys_exist_in_dict(
-            values, ["host", "user", "pwd", "name", "scheme"]
+            values, ["host", "user", "pwd", "name", "scheme", "port"]
         )
         isUriPresent = find_if_given_keys_exist_in_dict(values, ["uri"])
 
@@ -59,27 +65,12 @@ class DatabaseDsn(BaseSettings):
             values.__setitem__("user", values.__getitem__("uri").user)
             values.__setitem__("pwd", values.__getitem__("uri").password)
             values.__setitem__("host", values.__getitem__("uri").host)
+            values.__setitem__("port", values.__getitem__("uri").port)
             values.__setitem__("name", values.__getitem__("uri").name)
 
         elif isIndividualKeysPresent:
-            uri = "{scheme}://{user}:{pwd}@{host}/{name}".format_map(values)
-            # TODO: There must be a cleaner way to do this
-            x = create_model(
-                "MySqlDsn",
-                kwargs={
-                    "uri": uri,
-                    "scheme": values.__getitem__("scheme"),
-                    "user": values.__getitem__("user"),
-                    "password": values.__getitem__("pwd"),
-                    "host": values.__getitem__("host"),
-                    "tld": None,
-                    "host_type": "int_domain",
-                    "port": None,
-                    "path": "/" + values.__getitem__("name"),
-                    "query": None,
-                    "fragment": None,
-                },
-            )
+            uri = "{scheme}://{user}:{pwd}@{host}:{port}/{name}".format_map(values)
+            x: MySqlDsn = parse_obj_as(MySqlDsn, uri)
             values.__setitem__("uri", x)
         else:
             print("All the values", values)
