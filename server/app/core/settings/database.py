@@ -45,6 +45,10 @@ class DatabaseDsn(BaseSettings):
     name: Optional[str]
     port: Optional[int]
 
+    # min and max no of connections in our connection pool
+    min_connection_count: int = 10
+    max_connection_count: int = 10
+
     @root_validator(pre=False)
     def check_if_proper_url_is_provided(cls, values: Dict[str, Any]) -> Any:
         isIndividualKeysPresent = find_if_given_keys_exist_in_dict(
