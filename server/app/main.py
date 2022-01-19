@@ -2,10 +2,9 @@ from typing import Any
 
 import uvicorn
 from core.config import get_app_settings
+from core.events import createStartAppHandler, createStopAppHandler
 from fastapi import FastAPI
 from grpc_manager.base import GrpcManager
-
-from core.events import createStartAppHandler, createStopAppHandler
 
 app = FastAPI()
 

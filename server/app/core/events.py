@@ -1,18 +1,20 @@
+from typing import Callable
+
+from db.connection import closeMySqlConnection, createMySqlConnection
 from fastapi import FastAPI
 
-from db.connection import createMySqlConnection, closeMySqlConnection
 
-
-def createStartAppHandler(app: FastAPI):
-    async def startApp():
+def createStartAppHandler(app: FastAPI) -> Callable:  # type: ignore
+    async def startApp() -> None:
         app.state.pool = await createMySqlConnection()
         return
 
     return startApp
 
 
-def createStopAppHandler(app: FastAPI):
-    async def closeApp():
+def createStopAppHandler(app: FastAPI) -> Callable:  # type: ignore
+    async def closeApp() -> None:
         await closeMySqlConnection(app.state.pool)
+        return
 
     return closeApp
