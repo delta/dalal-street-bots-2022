@@ -1,7 +1,8 @@
 import re
 from typing import Any, Dict, Optional
 
-from pydantic import AnyUrl, BaseSettings, create_model, root_validator
+from pydantic import AnyUrl, BaseSettings, root_validator
+from pydantic.tools import parse_obj_as
 
 from ..utils import find_if_given_keys_exist_in_dict
 
@@ -69,23 +70,7 @@ class DatabaseDsn(BaseSettings):
 
         elif isIndividualKeysPresent:
             uri = "{scheme}://{user}:{pwd}@{host}:{port}/{name}".format_map(values)
-            # TODO: There must be a cleaner way to do this
-            x = create_model(
-                "MySqlDsn",
-                kwargs={
-                    "uri": uri,
-                    "scheme": values.__getitem__("scheme"),
-                    "user": values.__getitem__("user"),
-                    "password": values.__getitem__("pwd"),
-                    "host": values.__getitem__("host"),
-                    "tld": None,
-                    "host_type": "int_domain",
-                    "port": values.__getitem__("port"),
-                    "path": "/" + values.__getitem__("name"),
-                    "query": None,
-                    "fragment": None,
-                },
-            )
+            x: MySqlDsn = parse_obj_as(MySqlDsn, uri)
             values.__setitem__("uri", x)
         else:
             print("All the values", values)
