@@ -1,7 +1,8 @@
 import logging
 from typing import Callable
-from core.logging import setup_logging
+
 from core.config import get_app_settings
+from core.logger import setup_logging
 from db.connection import closeMySqlConnection, createMySqlConnection
 from fastapi import FastAPI
 

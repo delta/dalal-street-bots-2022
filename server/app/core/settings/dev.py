@@ -1,4 +1,5 @@
 import logging
+
 from pydantic import AnyHttpUrl, Field
 
 from .app import AppSettings
@@ -9,6 +10,6 @@ class DevAppSettings(AppSettings):
     reload: bool = True
     title: str = "Dalal Street Bots - Dev"
 
-    logging_level = logging.DEBUG
+    logging_level: int = logging.DEBUG
 
     grpc_server_uri: AnyHttpUrl = Field(...)

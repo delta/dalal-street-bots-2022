@@ -12,7 +12,7 @@ class AppSettings(BaseAppSettings):
     reload: bool = False
     port: int = 8000
 
-    logging_level = logging.INFO
+    logging_level: int = logging.INFO
 
     docs_url: str = "/docs"
     openapi_prefix: str = ""

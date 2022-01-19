@@ -1,6 +1,6 @@
-import os
 import logging
 import sys
+from typing import Any
 
 from loguru import logger
 
@@ -8,7 +8,7 @@ from .config import get_app_settings
 
 
 class InterceptHandler(logging.Handler):
-    def emit(self, record):
+    def emit(self, record: Any) -> None:
         # Get corresponding Loguru level if it exists
         try:
             level = logger.level(record.levelname).name
@@ -18,7 +18,7 @@ class InterceptHandler(logging.Handler):
         # Find caller from where originated the logged message
         frame, depth = logging.currentframe(), 2
         while frame.f_code.co_filename == logging.__file__:
-            frame = frame.f_back
+            frame = frame.f_back  # type: ignore
             depth += 1
 
         logger.opt(depth=depth, exception=record.exc_info).log(
@@ -26,10 +26,10 @@ class InterceptHandler(logging.Handler):
         )
 
 
-def setup_logging():
+def setup_lg() -> None:
     # intercept everything at the root logger
     logging.root.handlers = [InterceptHandler()]
-    logging.root.setLevel(get_app_settings().logging_level)
+    logging.root.setLevel(get_app_settings().lg_level)
 
     # remove every other logger's handlers
     # and propagate to root logger

@@ -1,5 +1,7 @@
 import asyncio
 import logging
+from typing import Any
+
 from aiomysql import Pool, create_pool
 from core.config import get_app_settings
 
@@ -13,7 +15,9 @@ async def createMySqlConnection() -> Pool:
 
     logging.info(f"Trying to create connection pool with : {get_app_settings().db.uri}")
 
-    async def create_db_with_given_loop(loop: asyncio.AbstractEventLoop):
+    async def create_db_with_given_loop(
+        loop: asyncio.AbstractEventLoop,
+    ) -> Any:
         user = get_app_settings().db.user
         pwd = get_app_settings().db.pwd
         db_name = get_app_settings().db.name
@@ -31,7 +35,7 @@ async def createMySqlConnection() -> Pool:
             maxsize=max_conn,
             loop=loop,
         )
-        logging.info(f"Successfully established MySql connection")
+        logging.info("Successfully established MySql connection")
         return conn
 
     # loop.run_until_complete(create_db_with_given_loop(loop))
