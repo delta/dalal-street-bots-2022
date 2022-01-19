@@ -14,8 +14,10 @@ grpcio = "^1.43.0"
 python-dotenv = "^0.19.2"
 alembic = "^1.7.5"
 SQLAlchemy = "^1.4.29"
-PyMySQL = "^1.0.2"
+PyMySQL = "0.9.3"
 mysqlclient = "^2.1.0"
+aiomysql = "^0.0.22"
+asyncio = "^3.4.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
