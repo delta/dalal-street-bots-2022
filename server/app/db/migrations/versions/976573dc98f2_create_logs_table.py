@@ -31,7 +31,7 @@ def upgrade():
     op.create_table(
         "logs",
         sa.Column("id", sa.Integer, primary_key=True),
-        sa.Column("log", sa.Text, unique=True, nullable=False),
+        sa.Column("log", sa.Text(length=4096), nullable=False),
         sa.Column(
             "bot_id",
             sa.Integer,
