@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict
 
 from pydantic import AnyHttpUrl
@@ -10,6 +11,8 @@ class AppSettings(BaseAppSettings):
     debug: bool = False
     reload: bool = False
     port: int = 8000
+
+    logging_level: int = logging.INFO
 
     docs_url: str = "/docs"
     openapi_prefix: str = ""

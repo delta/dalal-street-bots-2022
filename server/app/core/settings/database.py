@@ -1,3 +1,4 @@
+import logging
 import re
 from typing import Any, Dict, Optional
 
@@ -73,7 +74,7 @@ class DatabaseDsn(BaseSettings):
             x: MySqlDsn = parse_obj_as(MySqlDsn, uri)
             values.__setitem__("uri", x)
         else:
-            print("All the values", values)
+            logging.error(f"Invalid data provided for database, {values.__dict__}")
             raise ValueError("Database details not provided.")
 
         return values

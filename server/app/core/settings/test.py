@@ -1,3 +1,5 @@
+import logging
+
 from pydantic import AnyHttpUrl, Field
 
 from .app import AppSettings
@@ -12,7 +14,8 @@ class TestAppSettings(AppSettings):
 
     # db: DatabaseDsn = Field(DatabaseDsn(_env_file="test.env"))
 
-    # Need to set the Log level to Debug
+    # Generally we would want to see debug level during test
+    logging_level: int = logging.DEBUG
 
     class Config:
         # We have a separete env for testing
