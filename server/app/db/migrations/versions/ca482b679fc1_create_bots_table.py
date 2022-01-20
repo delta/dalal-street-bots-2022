@@ -22,7 +22,7 @@ def upgrade():
     op.create_table(
         "bots",
         sa.Column("id", sa.Integer, primary_key=True),
-        sa.Column("name", sa.String(255), nullable=False,length=255),
+        sa.Column("name", sa.String(255), nullable=False, length=255),
         sa.Column(
             "bot_type",
             sa.Integer,
