@@ -19,6 +19,7 @@ mysqlclient = "^2.1.0"
 aiomysql = "^0.0.22"
 asyncio = "^3.4.3"
 loguru = "^0.5.3"
+PyPika = "^0.48.8"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
