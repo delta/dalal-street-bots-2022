@@ -52,6 +52,7 @@ async def get_log_tail(
     _"""
 
     # validating the request
+    # TODO:: handle validation error
     data = log_schema.GetLogTailRequest(limit=limit, bot_id=bot_id, level=level)
 
     # building constrains for the query
@@ -82,9 +83,12 @@ async def get_log_tail(
         rows = await con.fetchall()
         """Row Schema
         (id, log, bot_id, level, created_at, updated_at)"""
-        
+
         # TODO: This might throw an error, need to handle it
         resp = [log_schema.create_LogInDB_from_tuple(row) for row in rows]
+        logging.debug(f"Got the response:{[x.dict() for x in resp]} when fetching queries")
+        logging.info("Sucessfully fetched log/tail")
+        # TODO: we are only returning response now, we also need to return any errors
         return resp
 
     except Exception as e:

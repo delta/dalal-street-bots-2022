@@ -15,7 +15,7 @@ async def _get_db_connection(pool: Pool = Depends(_get_db_pool)) -> Connection:
     try:
         yield conn
     finally:
-        print("Closing connection")
+        # BUG: Idk if we are supposed to close the connection after every request
         conn.close()
 
 
@@ -29,5 +29,4 @@ async def get_connection(conn=Depends(_get_db_connection)):
     try:
         yield (cursor)
     finally:
-        print("Closing cursor")
         await cursor.close()
