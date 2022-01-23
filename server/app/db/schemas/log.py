@@ -40,3 +40,25 @@ class GetLogTailRequest(BaseModel):
     level: Union[LogLevel, None]
     limit: int = 20
     bot_id: int = 0
+
+
+def create_LogInDB_from_tuple(data: tuple) -> LogInDB:
+    """A Utility function which creates a LogInDB model from a database Row.
+    When we get data from db, it is returned to us as a tuple and there isn't
+    a proper way to parse it into a pydantic model, refer https://github.com/tiangolo/fastapi/issues/214
+
+    So we have to write our own parser"""
+
+    """Row Structure
+        (id, log, bot_id, level, created_at, updated_at)
+        (  0,  1,      2,     3,          4,          5)"""
+
+    # TODO: Handle cas when validation fails
+    return LogInDB(
+        id=data[0],
+        log=data[1],
+        bot_id=data[2],
+        level=LogLevel[data[3]],
+        created_at=datetime(data[4]),
+        updated_at=datetime(data[5]),
+    )
