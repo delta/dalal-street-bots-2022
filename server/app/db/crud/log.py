@@ -1,8 +1,9 @@
 """Database layer for Logs Table"""
 
-from typing import Any, List
+from typing import Any, List, Tuple
 from aiomysql.cursors import Cursor
 import logging
+from pydantic import ValidationError
 from pypika import Table, MySQLQuery, Order, Criterion, Query
 
 from .base import log_query
@@ -13,29 +14,36 @@ logs = Table("logs")
 
 async def insert_log(
     con: Cursor, log: str, log_level: log_schema.LogLevel, bot_id: int
-) -> Exception:
+) -> Tuple[bool, Exception]:
     """Inserts a log into the database with the given data"""
 
-    data = log_schema.InsertLog(log=log, level=log_level, bot_id=bot_id)
+    try:
+        data = log_schema.InsertLog(log=log, level=log_level, bot_id=bot_id)
+    except ValidationError as e:
+        logging.error(f"Insert log validation failed, due to : {e.errors()}")
+
     q = (
         MySQLQuery.into(logs)
         .columns("id", "log", "level", "bot_id")
         .insert(None, data.log, data.level.name, data.bot_id)
     )
+
     logging.debug(f"Creating a new log for: {data.dict()}")
     log_query(str(q))
     try:
         await con.execute(str(q))
         await con.connection.commit()
+        True, None
     except Exception as e:
         logging.error(
             f"Couldn't create log for data={data.dict()} with the query={q} due to {e}"
         )
+        False, e
 
 
 async def get_log_tail(
     con: Cursor, limit: int = 20, bot_id: int = 0, level: log_schema.LogLevel = None
-):
+) -> Tuple[List[log_schema.LogInDB], Exception]:
     """Queries the and returns an last n logs satisfying the given parameters. User can fetch
     the last n logs by providing one or many of the given parameters,
     1. bot_id
@@ -52,9 +60,11 @@ async def get_log_tail(
     _"""
 
     # validating the request
-    # TODO:: handle validation error
-    data = log_schema.GetLogTailRequest(limit=limit, bot_id=bot_id, level=level)
-
+    try:
+        data = log_schema.GetLogTailRequest(limit=limit, bot_id=bot_id, level=level)
+    except ValidationError as e:
+        logging.error(f"GetLogTailRequest validation failed. Due to: {e.errors()}")
+        return [], e
     # building constrains for the query
     # if a condition is passed to this func as a parameter
     # we append it to criteria
@@ -86,12 +96,14 @@ async def get_log_tail(
 
         # TODO: This might throw an error, need to handle it
         resp = [log_schema.create_LogInDB_from_tuple(row) for row in rows]
-        logging.debug(f"Got the response:{[x.dict() for x in resp]} when fetching queries")
-        logging.info("Sucessfully fetched log/tail")
-        # TODO: we are only returning response now, we also need to return any errors
-        return resp
+        logging.debug(
+            f"Got the response:{[x.dict() for x in resp]} when fetching queries"
+        )
+        logging.info("Successfully fetched log/tail")
+        return resp, None
 
     except Exception as e:
         logging.error(
             f"Couldn't query the data={data.dict()} with the query={q} due to `{e}`"
         )
+        return [], e
