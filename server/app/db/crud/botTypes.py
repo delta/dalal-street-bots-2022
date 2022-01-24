@@ -133,8 +133,12 @@ async def update_bot_name(con: Cursor, id=int, name=str) -> Tuple[bool, Exceptio
 
     logging.info(f"Trying to the name of the bot with {id=}, to {name}")
 
+    # TODO: Add data validation
+
     # creating query
     q = MySQLQuery.update(bot_types).set(bot_types.name, name).where(bot_types.id == id)
+
+    log_query(str(q))
 
     try:
         await con.execute(str(q))
@@ -156,6 +160,8 @@ async def delete_bot_type_with_given_id(con: Cursor, id: int) -> Tuple[bool, Exc
     logging.info(f"Trying to delete bot with {id=}")
 
     q = MySQLQuery.from_(bot_types).delete().where(bot_types.id == id)
+
+    log_query(str(q))
 
     try:
         await con.execute(str(q))
