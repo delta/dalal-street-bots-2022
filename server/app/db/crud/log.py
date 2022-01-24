@@ -24,8 +24,8 @@ async def insert_log(
 
     q = (
         MySQLQuery.into(logs)
-        .columns("id", "log", "level", "bot_id")
-        .insert(None, data.log, data.level.name, data.bot_id)
+        .columns("log", "level", "bot_id")
+        .insert(data.log, data.level.name, data.bot_id)
     )
 
     logging.debug(f"Creating a new log for: {data.dict()}")
@@ -33,12 +33,12 @@ async def insert_log(
     try:
         await con.execute(str(q))
         await con.connection.commit()
-        True, None
+        return True, None
     except Exception as e:
         logging.error(
             f"Couldn't create log for data={data.dict()} with the query={q} due to {e}"
         )
-        False, e
+        return False, e
 
 
 async def get_log_tail(
@@ -91,9 +91,6 @@ async def get_log_tail(
         await con.execute(str(q))
 
         rows = await con.fetchall()
-        """Row Schema
-        (id, log, bot_id, level, created_at, updated_at)"""
-
         # TODO: This might throw an error, need to handle it
         resp = [log_schema.create_LogInDB_from_tuple(row) for row in rows]
         logging.debug(
