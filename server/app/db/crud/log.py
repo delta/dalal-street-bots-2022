@@ -1,20 +1,21 @@
 """Database layer for Logs Table"""
 
-from typing import Any, List, Tuple
-from aiomysql.cursors import Cursor
 import logging
+from typing import Any, List, Tuple, Union
+
+import db.schemas.log as log_schema
+from aiomysql.cursors import Cursor
 from pydantic import ValidationError
-from pypika import Table, MySQLQuery, Order, Criterion, Query
+from pypika import Criterion, MySQLQuery, Order, Table
 
 from .base import log_query
-import db.schemas.log as log_schema
 
 logs = Table("logs")
 
 
 async def insert_log(
     con: Cursor, log: str, log_level: log_schema.LogLevel, bot_id: int
-) -> Tuple[bool, Exception]:
+) -> Tuple[bool, Union[Exception, None]]:
     """Inserts a log into the database with the given data"""
 
     try:
@@ -44,20 +45,23 @@ async def insert_log(
 
 async def get_log_tail(
     con: Cursor, limit: int = 20, bot_id: int = 0, level: log_schema.LogLevel = None
-) -> Tuple[List[log_schema.LogInDB], Exception]:
-    """Queries the and returns an last n logs satisfying the given parameters. User can fetch
-    the last n logs by providing one or many of the given parameters,
+) -> Tuple[List[log_schema.LogInDB], Union[Exception, None]]:
+    """Queries the and returns an last n logs satisfying the given parameters. User can
+    fetch the last n logs by providing one or many of the given parameters,
     1. bot_id
     2. level - Log level of the log (INFO, WARN, DEBUG, ERROR)
-    3. no of logs - No of tail logs you want to return, (By default, we fetch the last 20 logs)
+    3. no of logs - No of tail logs you want to return,
+    (By default, we fetch the last 20 logs)
 
     Args:
         con (Cursor): Sql Connection cursor
         limit (int, optional): Number of logs you want to fetch. Defaults to 20.
         bot_id (int, optional): Gets the logs for the bot with the given id.
-        When not provided, it returns the logs of all the bots. Defaults to 0.
-        level (log_schema.LogLevel, optional): Any specific level of logs you want to get.
-        When not provided,it fetches all the levels . Defaults to None.
+        When not provided, it returns the logs of all the bots.
+        Defaults to 0.
+        level (log_schema.LogLevel, optional): Any specific level of logs
+        you want to get. When not provided,it fetches all the levels .
+        Defaults to None.
     _"""
 
     # validating the request
@@ -72,7 +76,7 @@ async def get_log_tail(
     criteria: List[Any] = []
     if bot_id != 0:
         criteria.append(logs.bot_id == bot_id)
-    if level != None:
+    if level is not None:
         criteria.append(logs.level == level.value.name)
 
     # Creating the query,

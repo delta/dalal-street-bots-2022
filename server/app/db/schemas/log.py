@@ -3,11 +3,11 @@ Contains models for inserting, querying, log_in_db models
 Any validation required for log's database layer must be done here,
 so that ONLY the actual query execution happens in crud/logs.py
 _"""
-from typing import Union
-from pydantic import BaseModel
-from enum import IntEnum
-
 from datetime import datetime
+from enum import IntEnum
+from typing import Union
+
+from pydantic import BaseModel
 
 from .timestamp import TimestampInDBPlugin
 

@@ -3,7 +3,9 @@ _"""
 
 from datetime import datetime
 from typing import Any, Dict, Literal, Union
+
 from pydantic import BaseModel, Field, root_validator
+
 from .timestamp import TimestampInDBPlugin
 
 
@@ -45,12 +47,12 @@ class QueryBot(BaseModel):
         is_valid_name = cls.name != ""
         is_valid_bot_type = False
         if type(cls.bot_type is str):
-            if cls.bot_type is "":
+            if cls.bot_type == "":
                 is_valid_bot_type = False
             else:
                 is_valid_bot_type = True
         else:
-            if cls.bot_type is 0:
+            if cls.bot_type == 0:
                 is_valid_bot_type = False
             else:
                 is_valid_bot_type = True
@@ -58,7 +60,7 @@ class QueryBot(BaseModel):
         if not is_valid_name and not is_valid_bot_type:
             helpful_error_message = (
                 f"query of `name='{cls.name}'` and `bot_type='{cls.bot_type}'` "
-                + f"is not valid. Provide one value for 'bot_type' or 'name'"
+                + "is not valid. Provide one value for 'bot_type' or 'name'"
             )
             raise ValueError(helpful_error_message)
         if is_valid_bot_type and is_valid_name:
@@ -66,8 +68,8 @@ class QueryBot(BaseModel):
             # so return a error
             helpful_error_message = (
                 f"query of `name='{cls.name}'` and `bot_type='{cls.bot_type}'` "
-                + f"is not valid. You can only query with either one value of 'bot_type' or 'name'. "
-                f"You cannot provide both values."
+                + "is not valid. You can only query with either one value of"
+                " 'bot_type' or 'name'. You cannot provide both values."
             )
             raise (helpful_error_message)
         if is_valid_bot_type:

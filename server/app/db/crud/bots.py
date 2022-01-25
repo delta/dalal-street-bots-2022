@@ -1,23 +1,22 @@
 """Database layer for bots"""
 
 import logging
-from tkinter import E
 from typing import Any, List, Tuple, Union
-from aiomysql.cursors import Cursor
-from pydantic import ValidationError
-from pypika import Table, MySQLQuery, Criterion
 
 import db.schemas.bots as bots_schema
-from .base import log_query, log_query_with_arguments
-from .botTypes import get_bot_type_with_given_name
+from aiomysql.cursors import Cursor
+from pydantic import ValidationError
+from pypika import Criterion, MySQLQuery, Table
 
+from .base import log_query, log_query_with_arguments
+from .bot_types import get_bot_type_with_given_name
 
 bots, bot_types = Table("bots", "bot_types")
 
 
 async def create_bot(
     con: Cursor, name=str, bot_type=Union[str, int]
-) -> Tuple[bool, Exception]:
+) -> Tuple[bool, Union[Exception, None]]:
     """Creates a bot with the given name and bot_type.
     given bot_type can be either a str(bot_type.name) or int(bot_type.id)
 
@@ -67,7 +66,8 @@ async def create_bot(
         return True, None
     except Exception as e:
         logging.error(
-            f"Couldn't create bot with {name=} {bot_type=} with query=`{q}` due to `{e}`"
+            f"Couldn't create bot with {name=}"
+            + f"{bot_type=} with query=`{q}` due to `{e}`"
         )
         return False, e
 
@@ -82,11 +82,13 @@ async def get_all_bots(
 
     Args:
         con (Cursor): AioMySql Connection
-        inflate_bot_type (bool, optional): specify whether if you want to find the name of the
-        corresponding bot_type row and return during response. Defaults to True.
+        inflate_bot_type (bool, optional): specify whether
+        if you want to find the name of the corresponding bot_type
+        row and return during response. Defaults to True.
 
     Returns:
-        Tuple[List[bots_schema.BotInDB], Exception]: List of all the bots, Exception if any
+        Tuple[List[bots_schema.BotInDB], Union[Exception, None]]: List of all the bots,
+        Exception if any
     _"""
 
     logging.info(f"Finding all bots with {inflate_bot_type=}")
@@ -115,7 +117,8 @@ async def get_all_bots(
         return resp, None
     except Exception as e:
         logging.error(
-            f"Couldn't query all bots with {inflate_bot_type=} with query={q} due to {e}"
+            f"Couldn't query all bots with {inflate_bot_type=} with query={q}"
+            + f" due to {e}"
         )
         return [], e
 
@@ -145,7 +148,7 @@ async def query_bots_with_details(
 
 async def _get_bots_with_details_inflated(
     con: Cursor, name: str = "", bot_type: Union[str, int] = 0
-) -> Tuple[List[bots_schema.BotInDBInflated], Exception]:
+) -> Tuple[List[bots_schema.BotInDBInflated], Union[Exception, None]]:
     """Function to query inflated details"""
 
     logging.info(f"Quering bots with {name=} and {bot_type=} inflated")
@@ -206,7 +209,7 @@ async def _get_bots_with_details_inflated(
 
 async def _get_bots_with_details_uninflated(
     con: Cursor, name: str = "", bot_type: Union[str, int] = 0
-) -> Tuple[List[bots_schema.BotInDB], Exception]:
+) -> Tuple[List[bots_schema.BotInDB], Union[Exception, None]]:
     """Function to query uninflated details"""
 
     logging.info(f"Quering bots with {name=} and {bot_type=} uninflated")
@@ -251,7 +254,8 @@ async def _get_bots_with_details_uninflated(
         return resp, None
     except Exception as e:
         logging.error(
-            f"Couldn't query bots(uninflated) with {data.dict()} with query={q} due to {e}",
+            "Couldn't query bots(uninflated) with"
+            + f"{data.dict()} with query={q} due to {e}",
         )
         return [], None
 

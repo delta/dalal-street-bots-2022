@@ -1,20 +1,21 @@
 """Database layer for 'bot_types' Table"""
-from typing import Any, List, Tuple, Union
 import logging
-from pydantic import ValidationError
+from typing import List, Tuple, Union
 
-import db.schemas.botTypes as bot_type_schema
+import server.app.db.schemas.bot_types as bot_type_schema
 from aiomysql.cursors import Cursor
-
-from pypika import Table, MySQLQuery, Query
+from db.errors import RecordNotFound
+from pydantic import ValidationError
+from pypika import MySQLQuery, Table
 
 from .base import log_query
-from db.errors import RecordNotFound
 
 bot_types = Table("bot_types")
 
 
-async def insert_bot_type(con: Cursor, name: str) -> Tuple[bool, Exception]:
+async def insert_bot_type(
+    con: Cursor, name: str
+) -> Tuple[bool, Union[Exception, None]]:
     """Inserts a bot_type into the database with the given data"""
 
     logging.info(f"Trying to insert a new 'bot_type' with {name=}")
@@ -46,7 +47,7 @@ async def insert_bot_type(con: Cursor, name: str) -> Tuple[bool, Exception]:
 
 async def get_all_bots(
     con: Cursor,
-) -> Tuple[List[bot_type_schema.BotTypeInDB], Exception]:
+) -> Tuple[List[bot_type_schema.BotTypeInDB], Union[Exception, None]]:
     """Fetches all the bots from the database"""
     logging.info("Trying to fetch all bots")
 
@@ -74,7 +75,7 @@ async def get_all_bots(
 
 async def get_bot_type_with_given_name(
     con: Cursor, name: str
-) -> Tuple[Union[bot_type_schema.BotTypeInDB, None], Exception]:
+) -> Tuple[Union[bot_type_schema.BotTypeInDB, None], Union[Exception, None]]:
     """Fetch bot with given name"""
 
     logging.info(f"Trying the fetch bot_type with {name=}")
@@ -102,7 +103,7 @@ async def get_bot_type_with_given_name(
 
 async def get_bot_type_with_given_id(
     con: Cursor, id: int
-) -> Tuple[Union[bot_type_schema.BotTypeInDB, None], Exception]:
+) -> Tuple[Union[bot_type_schema.BotTypeInDB, None], Union[Exception, None]]:
     """Fetches the bot with the given id"""
     logging.info(f"Trying the fetch bot_type with {id=}")
 
@@ -128,7 +129,9 @@ async def get_bot_type_with_given_id(
         return None, e
 
 
-async def update_bot_name(con: Cursor, id=int, name=str) -> Tuple[bool, Exception]:
+async def update_bot_name(
+    con: Cursor, id=int, name=str
+) -> Tuple[bool, Union[Exception, None]]:
     """Changes the name of the the bot with the given id"""
 
     logging.info(f"Trying to the name of the bot with {id=}, to {name}")
@@ -154,7 +157,9 @@ async def update_bot_name(con: Cursor, id=int, name=str) -> Tuple[bool, Exceptio
         return False, e
 
 
-async def delete_bot_type_with_given_id(con: Cursor, id: int) -> Tuple[bool, Exception]:
+async def delete_bot_type_with_given_id(
+    con: Cursor, id: int
+) -> Tuple[bool, Union[Exception, None]]:
     """deletes the bots with the given id"""
 
     logging.info(f"Trying to delete bot with {id=}")
@@ -177,7 +182,7 @@ async def delete_bot_type_with_given_id(con: Cursor, id: int) -> Tuple[bool, Exc
 
 async def delete_bot_type_with_given_name(
     con: Cursor, name: str
-) -> Tuple[bool, Exception]:
+) -> Tuple[bool, Union[Exception, None]]:
     """deletes the bots with the given name"""
 
     logging.info(f"Trying to delete bot with {name=}")

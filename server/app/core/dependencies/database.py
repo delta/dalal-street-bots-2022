@@ -1,9 +1,8 @@
 """Database dependencies"""
 
-from fastapi import Depends
-from fastapi import Request
-from aiomysql import Pool, Connection
+from aiomysql import Connection, Pool
 from aiomysql.cursors import Cursor
+from fastapi import Depends, Request
 
 
 def _get_db_pool(request: Request) -> Pool:
