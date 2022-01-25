@@ -133,7 +133,7 @@ async def get_bot_type_with_given_id(
 
 
 async def update_bot_name(
-    con: Cursor, id=int, name=str
+    con: Cursor, id: int, name: str
 ) -> Tuple[bool, Union[Exception, None]]:
     """Changes the name of the the bot with the given id"""
 
