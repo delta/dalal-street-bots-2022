@@ -75,7 +75,8 @@ async def create_bot(
 async def get_all_bots(
     con: Cursor, inflate_bot_type: bool = True
 ) -> Tuple[
-    Union[List[bots_schema.BotInDB], List[bots_schema.BotInDBInflated]], Exception
+    Union[List[bots_schema.BotInDB], List[bots_schema.BotInDBInflated]],
+    Union[Exception, None],
 ]:
     """Finds and returns all the bots, optionally can pass on 'bot_type' to specify
     if you want to find the corresponding bot_type details and return it.
@@ -129,7 +130,8 @@ async def query_bots_with_details(
     bot_type: Union[str, int] = 0,
     inflate_bot_type: bool = True,
 ) -> Tuple[
-    Union[List[bots_schema.BotInDB], List[bots_schema.BotInDBInflated]], Exception
+    Union[List[bots_schema.BotInDB], List[bots_schema.BotInDBInflated]],
+    Union[Exception, None],
 ]:
     """Fetches all the bots with the queried details.
     name - returns Bots[] with the given name (List of len 1)
@@ -260,10 +262,68 @@ async def _get_bots_with_details_uninflated(
         return [], None
 
 
-# TODO
-# async def update_bot_with_id(con: Cursor):
-#     """"""
+async def update_bot_name_with_id(
+    con: Cursor, id: int, name: str
+) -> Tuple[bool, Union[Exception, None]]:
+    """Update the name of the bot with the given id"""
+
+    logging.info(f"Trying to update the name of the bot with {id=} to {name=}")
+
+    q = MySQLQuery.update(bots).set(bots.name, name).where(bots.id == id)
+
+    log_query(str(q))
+
+    try:
+        await con.execute(str(q))
+        await con.commit()
+        logging.info(f"Successfully updated bot name to `{name}` with {id=}")
+        return True, None
+    except Exception as e:
+        # TODO: Need to handle 1. invalid id, 2. duplicate name
+        logging.error(
+            f"Unable to update bot name with {id=} to {name=} with query=`{q}`"
+            + f"due to `{e}`"
+        )
+        return False, e
 
 
-# async def delete_bot_with_id(con: Cursor):
-#     """"""
+async def delete_bot_with_id(
+    con: Cursor, id: int
+) -> Tuple[bool, Union[Exception, None]]:
+    """Deletes the bot with the given id"""
+
+    logging.info(f"Trying to delete bot with {id=}")
+
+    q = MySQLQuery.from_(bots).delete().where(bots.id == id)
+
+    log_query(str(q))
+
+    try:
+        await con.execute(str(q))
+        await con.commit()
+        logging.info(f"Successfully deleted bot with {id=}")
+    except Exception as e:
+        # TODO: Handle case when the bot with given id doesn't exist
+        logging.error(f"Unable to delete bot with {id=} with query=`{q}` due to `{e}`")
+        return False, e
+
+
+async def delete_bot_with_given_name(
+    con: Cursor, name: str
+) -> Tuple[bool, Union[Exception, None]]:
+    """deletes the bot with the given name"""
+
+    logging.info(f"Trying to delete bot with {name=}")
+
+    q = MySQLQuery.from_(bots).delete().where(bots.name == name)
+
+    try:
+        await con.execute(str(q))
+        await con.commit()
+        logging.info(f"Successfully deleted bot with {name=}")
+    except Exception as e:
+        # TODO: Handle case when the bot with given name doesn't exist
+        logging.error(
+            f"Unable to delete bot with {name=} with query=`{q}` due to `{e}`"
+        )
+        return False, e

@@ -146,7 +146,7 @@ async def update_bot_name(
     try:
         await con.execute(str(q))
         await con.commit()
-        logging.info(f"Successfully updated bot name to `{name}` with {id=}")
+        logging.info(f"Successfully updated bot_type name to `{name}` with {id=}")
         return True, None
     except Exception as e:
         # TODO: Need to handle 1. invalid id, 2. duplicate name
