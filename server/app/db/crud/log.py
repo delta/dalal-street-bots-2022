@@ -21,6 +21,7 @@ async def insert_log(
         data = log_schema.InsertLog(log=log, level=log_level, bot_id=bot_id)
     except ValidationError as e:
         logging.error(f"Insert log validation failed, due to : {e.errors()}")
+        return False, e
 
     q = (
         MySQLQuery.into(logs)
