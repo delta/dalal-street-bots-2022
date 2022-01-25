@@ -1,8 +1,7 @@
 """Contains all the schema for bots db layer,
 _"""
 
-from datetime import datetime
-from typing import Any, Dict, Literal, Union
+from typing import Any, Dict, Union, Tuple
 
 from pydantic import BaseModel, Field, root_validator
 
@@ -38,7 +37,7 @@ class QueryBot(BaseModel):
 
     _query_on = ""
 
-    def get_query_on(cls) -> Literal["name", "bot_type"]:
+    def get_query_on(cls) -> str:
         return cls._query_on
 
     @root_validator
@@ -71,7 +70,7 @@ class QueryBot(BaseModel):
                 + "is not valid. You can only query with either one value of"
                 " 'bot_type' or 'name'. You cannot provide both values."
             )
-            raise (helpful_error_message)
+            raise ValueError(helpful_error_message)
         if is_valid_bot_type:
             cls._query_on = "bot_type"
         else:
@@ -79,7 +78,7 @@ class QueryBot(BaseModel):
         return values
 
 
-def create_BotInDB_from_tuple(data: tuple) -> BotInDB:
+def create_BotInDB_from_tuple(data: Tuple[Any, ...]) -> BotInDB:
     """Converts db row returned as tuple to pydantic model"""
 
     """Row Structure
@@ -92,12 +91,12 @@ def create_BotInDB_from_tuple(data: tuple) -> BotInDB:
         id=data[0],
         name=data[1],
         bot_type=data[2],
-        created_at=datetime(data[3]),
-        updated_at=datetime(data[4]),
+        created_at=(data[3]),
+        updated_at=(data[4]),
     )
 
 
-def create_botInDBInflated_from_tuple(data: tuple) -> BotInDBInflated:
+def create_botInDBInflated_from_tuple(data: Tuple[Any, ...]) -> BotInDBInflated:
     """Converts db row returned as tuple to a pydantic model"""
 
     # BUG: We dont know what the columns will be, right now we are
@@ -118,7 +117,7 @@ def create_botInDBInflated_from_tuple(data: tuple) -> BotInDBInflated:
         id=data[0],
         name=data[1],
         bot_type=data[2],
-        created_at=datetime(data[3]),
-        updated_at=datetime(data[4]),
+        created_at=(data[3]),
+        updated_at=(data[4]),
         bot_type_name=data[5],
     )

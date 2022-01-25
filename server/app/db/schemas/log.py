@@ -3,9 +3,8 @@ Contains models for inserting, querying, log_in_db models
 Any validation required for log's database layer must be done here,
 so that ONLY the actual query execution happens in crud/logs.py
 _"""
-from datetime import datetime
 from enum import IntEnum
-from typing import Union
+from typing import Any, Tuple, Union
 
 from pydantic import BaseModel
 
@@ -42,7 +41,7 @@ class GetLogTailRequest(BaseModel):
     bot_id: int = 0
 
 
-def create_LogInDB_from_tuple(data: tuple) -> LogInDB:
+def create_LogInDB_from_tuple(data: Tuple[Any, ...]) -> LogInDB:
     """A Utility function which creates a LogInDB model from a database Row.
     When we get data from db, it is returned to us as a tuple and there isn't
     a proper way to parse it into a pydantic model,
@@ -60,6 +59,6 @@ def create_LogInDB_from_tuple(data: tuple) -> LogInDB:
         log=data[1],
         bot_id=data[2],
         level=LogLevel[data[3]],
-        created_at=datetime(data[4]),
-        updated_at=datetime(data[5]),
+        created_at=(data[4]),
+        updated_at=(data[5]),
     )

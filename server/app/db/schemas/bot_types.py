@@ -1,6 +1,8 @@
 """Contains all the schemas for data validation of botType CRUD functions
 _"""
 
+from typing import Any, Tuple
+
 from pydantic import BaseModel
 
 from .timestamp import TimestampInDBPlugin
@@ -21,7 +23,7 @@ class BotTypeInDB(BotTypeBase, TimestampInDBPlugin):
         orm_mode = True
 
 
-def create_BotTypeInDB_from_tuple(data: tuple) -> BotTypeInDB:
+def create_BotTypeInDB_from_tuple(data: Tuple[Any, ...]) -> BotTypeInDB:
     """Utility function which creates a ButTypeInDB model from the database row."""
 
     """Row Structure

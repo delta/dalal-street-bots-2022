@@ -18,7 +18,7 @@ async def _get_db_connection(pool: Pool = Depends(_get_db_pool)) -> Connection:
         conn.close()
 
 
-async def get_connection(conn=Depends(_get_db_connection)):
+async def get_connection(conn: Connection = Depends(_get_db_connection)) -> Cursor:
     """A FAST API Dependency which returns a cursor from the database
     connection pool. By using this function the user is guaranteed  to
     get a database cursor. Any route which requires some kind of database

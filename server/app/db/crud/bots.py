@@ -15,7 +15,7 @@ bots, bot_types = Table("bots", "bot_types")
 
 
 async def create_bot(
-    con: Cursor, name=str, bot_type=Union[str, int]
+    con: Cursor, name: str, bot_type: Union[str, int]
 ) -> Tuple[bool, Union[Exception, None]]:
     """Creates a bot with the given name and bot_type.
     given bot_type can be either a str(bot_type.name) or int(bot_type.id)
@@ -33,20 +33,20 @@ async def create_bot(
         # the bot_type name is given. get its id from bot_types
         # and update bot_id
         logging.debug("name of bot_type was given, fetching bot_type id from db")
-        (bot_type_data, err) = await get_bot_type_with_given_name(con, bot_type)
-        logging.debug(
-            f"Successfully found bot_type data={bot_type_data.dict()} when fetching"
-            + f"bot_type with name={bot_type}"
-        )
+        (bot_type_data, err) = await get_bot_type_with_given_name(con, str(bot_type))
         if err:
             # Some error occurred, return the error to the user
             return False, err
-        bot_type_id = bot_type_data.id
+        logging.debug(
+            f"Successfully found bot_type data={bot_type_data.dict()}"  # type: ignore
+            + f" when fetching bot_type with name={bot_type}"
+        )
+        bot_type_id = bot_type_data.id  # type: ignore
 
     try:
         data = bots_schema.CreateBot(name=name, bot_type=bot_type_id)
     except ValidationError as e:
-        logging.Error(f"Create bot validation failed due to {e.errors()}")
+        logging.error(f"Create bot validation failed due to {e.errors()}")
         return False, e
 
     # Creating query
@@ -173,7 +173,7 @@ async def _get_bots_with_details_inflated(
         bot_type_data, err = await get_bot_type_with_given_name(con, data.bot_type)
         if err:
             return [], err
-        bot_id = bot_type_data.id
+        bot_id = bot_type_data.id  # type: ignore
     else:
         bot_id = data.bot_type
 
@@ -234,7 +234,7 @@ async def _get_bots_with_details_uninflated(
         bot_type_data, err = await get_bot_type_with_given_name(con, data.bot_type)
         if err:
             return [], err
-        bot_id = bot_type_data.id
+        bot_id = bot_type_data.id  # type: ignore
     else:
         bot_id = data.bot_type
 
@@ -302,6 +302,7 @@ async def delete_bot_with_id(
         await con.execute(str(q))
         await con.commit()
         logging.info(f"Successfully deleted bot with {id=}")
+        return True, None
     except Exception as e:
         # TODO: Handle case when the bot with given id doesn't exist
         logging.error(f"Unable to delete bot with {id=} with query=`{q}` due to `{e}`")
@@ -321,6 +322,7 @@ async def delete_bot_with_given_name(
         await con.execute(str(q))
         await con.commit()
         logging.info(f"Successfully deleted bot with {name=}")
+        return True, None
     except Exception as e:
         # TODO: Handle case when the bot with given name doesn't exist
         logging.error(
