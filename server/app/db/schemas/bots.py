@@ -1,7 +1,7 @@
 """Contains all the schema for bots db layer,
 _"""
 
-from typing import Any, Dict, Union, Tuple
+from typing import Any, Dict, Tuple, Union
 
 from pydantic import BaseModel, Field, root_validator
 
@@ -75,6 +75,27 @@ class QueryBot(BaseModel):
             cls._query_on = "bot_type"
         else:
             cls._query_on = "name"
+        return values
+
+
+class UpdateBot(BaseModel):
+    name: str = Field("")
+    bot_type: int = Field(0)
+
+    @root_validator
+    def check_valid_data(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """Checks if at least one of name or bot_type is provided"""
+        is_valid_name = cls.name != ""
+        is_valid_bot_type = cls.bot_type != 0
+
+        if not is_valid_bot_type and not is_valid_name:
+            helpful_error_message = (
+                f"query of `name='{cls.name}'` and `bot_type='{cls.bot_type}'` "
+                + "is not valid. Provide at least one value for"
+                + "'bot_type' or 'name'"
+            )
+            raise ValueError(helpful_error_message)
+
         return values
 
 

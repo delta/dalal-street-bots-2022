@@ -262,26 +262,45 @@ async def _get_bots_with_details_uninflated(
         return [], None
 
 
-async def update_bot_name_with_id(
-    con: Cursor, id: int, name: str
+async def update_bot_data_with_id(
+    con: Cursor, id: int, name: str = "", bot_type: int = 0
 ) -> Tuple[bool, Union[Exception, None]]:
-    """Update the name of the bot with the given id"""
+    """Update the data of the bot with the given id"""
 
-    logging.info(f"Trying to update the name of the bot with {id=} to {name=}")
+    logging.info(
+        "Trying to update the details of the bot with "
+        + f"{id=} to {name=} and {bot_type=}"
+    )
 
-    q = MySQLQuery.update(bots).set(bots.name, name).where(bots.id == id)
+    try:
+        data = bots_schema.UpdateBot(name=name, bot_type=bot_type)
+    except ValidationError as e:
+        logging.error(
+            f"Couldn't to update bots with {name=} and {bot_type=}",
+            f" as validation failed with the error(s): {e.errors()}",
+        )
+        return False, e
+
+    q = MySQLQuery.update(bots).where(bots.id == id)
+
+    # manually checking if every query is dry, and
+    # adding it to set
+    if data.name != "":
+        q = q.set(bots.name, data.name)
+    if data.bot_type != 0:
+        q.set(bots.bot_type, data.bot_type)
 
     log_query(str(q))
 
     try:
         await con.execute(str(q))
         await con.commit()
-        logging.info(f"Successfully updated bot name to `{name}` with {id=}")
+        logging.info(f"Successfully updated bot data to {data.dict()} with {id=}")
         return True, None
     except Exception as e:
         # TODO: Need to handle 1. invalid id, 2. duplicate name
         logging.error(
-            f"Unable to update bot name with {id=} to {name=} with query=`{q}`"
+            f"Unable to update bot data with {id=} to {data.dict()} with query=`{q}`"
             + f"due to `{e}`"
         )
         return False, e
