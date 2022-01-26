@@ -5,13 +5,15 @@
 
 - **app_env** - Environment in which the app is running in. `dev` | `test` | `prod`
 
-- **database_uri**
+- **db_uri** - you can either provide this or add `db_scheme`, `db_user`, `db_pwd`, `db_host`, `db_port`, `db_name` individually.
+
+  - Anatomy of **db_uri**
 
   ```
       scheme://user:password@host:port/db_name
   ```
 
-  - **Scheme**: your mysql scheme Eg: `mysql` or `mariadb`
+  - **scheme**: your mysql scheme Eg: `mysql` or `mariadb`
   - **user**: MySql user
   - **password** - Mysql user password
   - **host** - Mysql host _(Usually `localhost`)_

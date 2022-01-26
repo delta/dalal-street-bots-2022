@@ -7,7 +7,7 @@ from db.errors import RecordNotFound
 from pydantic import ValidationError
 from pypika import MySQLQuery, Table
 
-import server.app.db.schemas.bot_types as bot_type_schema
+import db.schemas.bot_types as bot_type_schema
 
 from .base import log_query
 
@@ -148,7 +148,7 @@ async def update_bot_type_name(
 
     try:
         await con.execute(str(q))
-        await con.commit()
+        await con.connection.commit()
         logging.info(f"Successfully updated bot_type name to `{name}` with {id=}")
         return True, None
     except Exception as e:
@@ -195,7 +195,7 @@ async def delete_bot_type_with_given_name(
 
     try:
         await con.execute(str(q))
-        await con.commit()
+        await con.connection.commit()
         logging.info(f"Successfully deleted bot_type with {name=}")
         return True, None
     except Exception as e:

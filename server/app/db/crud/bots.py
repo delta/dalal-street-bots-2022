@@ -11,7 +11,8 @@ from pypika import Criterion, MySQLQuery, Table
 from .base import log_query, log_query_with_arguments
 from .bot_types import get_bot_type_with_given_name
 
-bots, bot_types = Table("bots", "bot_types")
+bots = Table("bots")
+bot_types = Table("bot_types")
 
 
 async def create_bot(
@@ -60,8 +61,8 @@ async def create_bot(
 
     try:
         # executing query
-        await con.execute(q)
-        await con.commit()
+        await con.execute(str(q))
+        await con.connection.commit()
         logging.info(f"Successfully created a bot with {name=} {bot_type=}")
         return True, None
     except Exception as e:
@@ -108,7 +109,7 @@ async def get_all_bots(
     log_query(str(q))
 
     try:
-        await con.execute()
+        await con.execute(q)
         rows = await con.fetchall()
         resp = (
             [bots_schema.create_botInDBInflated_from_tuple(row) for row in rows]
@@ -161,13 +162,14 @@ async def _get_bots_with_details_inflated(
     except ValidationError as e:
         # validation failed, return errors
         logging.error(
-            f"Couldn't to query bots with {name=} and {bot_type=}",
-            f" as validation failed with the error(s): {e.errors()}",
+            f"Couldn't to query bots with {name=} and {bot_type=}"
+            + f" as validation failed with the error(s): {e.errors()}",
         )
         return [], e
 
     bot_id = 0
-    if type(data.bot_type) is str:
+
+    if type(data.bot_type) is str and data.bot_type != "":
         # name of the bot_type is given, query for the bot_type_id and
         # use the to query the bot data
         bot_type_data, err = await get_bot_type_with_given_name(con, data.bot_type)
@@ -176,6 +178,8 @@ async def _get_bots_with_details_inflated(
         bot_id = bot_type_data.id  # type: ignore
     else:
         bot_id = data.bot_type
+
+    logging.debug(data.dict())
 
     # create the query
     # "as" doesn't have proper support in pypika,
@@ -250,7 +254,7 @@ async def _get_bots_with_details_uninflated(
 
     # executing the query
     try:
-        await con.execute(q)
+        await con.execute(str(q))
         rows = await con.fetchall()
         resp = [bots_schema.create_BotInDB_from_tuple(row) for row in rows]
         return resp, None
@@ -294,7 +298,7 @@ async def update_bot_data_with_id(
 
     try:
         await con.execute(str(q))
-        await con.commit()
+        await con.connection.commit()
         logging.info(f"Successfully updated bot data to {data.dict()} with {id=}")
         return True, None
     except Exception as e:
@@ -319,7 +323,7 @@ async def delete_bot_with_id(
 
     try:
         await con.execute(str(q))
-        await con.commit()
+        await con.connection.commit()
         logging.info(f"Successfully deleted bot with {id=}")
         return True, None
     except Exception as e:
@@ -339,7 +343,7 @@ async def delete_bot_with_given_name(
 
     try:
         await con.execute(str(q))
-        await con.commit()
+        await con.connection.commit()
         logging.info(f"Successfully deleted bot with {name=}")
         return True, None
     except Exception as e:
