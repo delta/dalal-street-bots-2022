@@ -76,7 +76,7 @@
   - To start the server run
 
   ```sh
-    python ./server/app/main.py
+    cd server && python ./app/main.py
   ```
 
   - To start client run

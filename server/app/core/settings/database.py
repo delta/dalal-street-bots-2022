@@ -74,7 +74,7 @@ class DatabaseDsn(BaseSettings):
             x: MySqlDsn = parse_obj_as(MySqlDsn, uri)
             values.__setitem__("uri", x)
         else:
-            logging.error(f"Invalid data provided for database, {values.__dict__}")
+            logging.error(f"Invalid data provided for database, {values}")
             raise ValueError("Database details not provided.")
 
         return values
