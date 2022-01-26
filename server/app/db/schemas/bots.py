@@ -1,7 +1,6 @@
 """Contains all the schema for bots db layer,
 _"""
 
-from multiprocessing.sharedctypes import Value
 from typing import Any, Dict, Tuple, Union
 
 from pydantic import BaseModel, Field, root_validator
