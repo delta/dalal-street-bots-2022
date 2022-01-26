@@ -34,7 +34,7 @@
     poetry shell
   ```
 
-  - Creating env and add respective values
+  - Creating env and add respective values. Refer `server/README.md` for more information about env variables
 
   ```sh
     cp .env.example .env
