@@ -3,6 +3,8 @@
 - **Note**: Default values for all the env variables can be found in `app/core/settings/`
   <br/>
 
+- **app_env** - Environment in which the app is running in. `dev` | `test` | `prod`
+
 - **database_uri**
 
   ```
@@ -15,7 +17,7 @@
   - **host** - Mysql host _(Usually `localhost`)_
   - **port** - Mysql port _(Usually `3306`)_
 
-- **reload** - Hot reload the app whenever there is some change, _recommended in dev mode_
+- **reload** - Hot reload the app whenever there is some change. _( recommended in dev mode )_
 
 - **port** - Port which api runs on
 - **logging_level** - `DEBUG` | `INFO` | `WARNING` | `ERROR`
