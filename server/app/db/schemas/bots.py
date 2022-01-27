@@ -62,7 +62,7 @@ class QueryBot(BaseModel):
         if not is_valid_name and not is_valid_bot_type:
             helpful_error_message = (
                 f"query of `name='{name}'` and `bot_type='{bot_type}'` "
-                + "is not valid. Provide one value for 'bot_type' or 'name'"
+                "is not valid. Provide one value for 'bot_type' or 'name'"
             )
             raise ValueError(helpful_error_message)
         if is_valid_bot_type and is_valid_name:
@@ -70,7 +70,7 @@ class QueryBot(BaseModel):
             # so return a error
             helpful_error_message = (
                 f"query of `name='{name}'` and `bot_type='{bot_type}'` "
-                + "is not valid. You can only query with either one value of"
+                "is not valid. You can only query with either one value of"
                 " 'bot_type' or 'name'. You cannot provide both values."
             )
             raise ValueError(helpful_error_message)
@@ -78,6 +78,8 @@ class QueryBot(BaseModel):
             values["_query_on"] = "bot_type"
         else:
             values["_query_on"] = "name"
+        if str(bot_type).isnumeric():
+            values["bot_type"] = int(bot_type)
         return values
 
 
@@ -99,8 +101,8 @@ class UpdateBot(BaseModel):
         if not is_valid_bot_type and not is_valid_name:
             helpful_error_message = (
                 f"query of `name='{name}'` and `bot_type='{bot_type}'` "
-                + "is not valid. Provide at least one value for"
-                + "'bot_type' or 'name'"
+                "is not valid. Provide at least one value for"
+                "'bot_type' or 'name'"
             )
             raise ValueError(helpful_error_message)
 

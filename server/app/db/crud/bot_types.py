@@ -91,9 +91,9 @@ async def get_bot_type_with_given_name(
     try:
         await con.execute(str(q))
         row = await con.fetchone()
-        # TODO: Don't know if this will throw an error or return a empty
         # response, need to check it
-        if len(row) == 0:
+        if row is None:
+            logging.error(f"bot_type with {name=} doesn't exist")
             return None, RecordNotFound
         resp = bot_type_schema.create_BotTypeInDB_from_tuple(row)
         logging.debug(f"for the data={resp.dict()} while fetching bot with {name=}")
@@ -119,9 +119,9 @@ async def get_bot_type_with_given_id(
     try:
         await con.execute(str(q))
         row = await con.fetchone()
-        # TODO: Don't know if this will throw an error or return a empty
         # response, need to check it
-        if len(row) == 0:
+        if row == None:
+            logging.error(f"bot_type with {id=} doesn't exist")
             return None, RecordNotFound
         resp = bot_type_schema.create_BotTypeInDB_from_tuple(row)
         logging.debug(f"for the data={resp.dict()} while fetching bot with {id=}")
@@ -155,7 +155,7 @@ async def update_bot_type_name(
         # TODO: Need to handle 1. invalid id, 2. duplicate name
         logging.error(
             f"Unable to update bot_type with {id=} to {name=} with query=`{q}`"
-            + f"due to `{e}`"
+            f"due to `{e}`"
         )
         return False, e
 

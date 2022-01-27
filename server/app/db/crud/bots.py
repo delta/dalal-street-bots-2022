@@ -40,7 +40,7 @@ async def create_bot(
             return False, err
         logging.debug(
             f"Successfully found bot_type data={bot_type_data.dict()}"  # type: ignore
-            + f" when fetching bot_type with name={bot_type}"
+            f" when fetching bot_type with name={bot_type}"
         )
         bot_type_id = bot_type_data.id  # type: ignore
 
@@ -68,7 +68,7 @@ async def create_bot(
     except Exception as e:
         logging.error(
             f"Couldn't create bot with {name=}"
-            + f"{bot_type=} with query=`{q}` due to `{e}`"
+            f"{bot_type=} with query=`{q}` due to `{e}`"
         )
         return False, e
 
@@ -163,15 +163,19 @@ async def _get_bots_with_details_inflated(
         # validation failed, return errors
         logging.error(
             f"Couldn't to query bots with {name=} and {bot_type=}"
-            + f" as validation failed with the error(s): {e.errors()}",
+            f" as validation failed with the error(s): {e.errors()}",
         )
         return [], e
 
     bot_id = 0
-
+    logging.debug(data.dict())
     if type(data.bot_type) is str and data.bot_type != "":
         # name of the bot_type is given, query for the bot_type_id and
         # use the to query the bot data
+        logging.debug(
+            f"bot_type.name=`{data.bot_type}` was given."
+            "Trying to fetch its id from bot_type table"
+        )
         bot_type_data, err = await get_bot_type_with_given_name(con, data.bot_type)
         if err:
             return [], err
@@ -179,10 +183,8 @@ async def _get_bots_with_details_inflated(
     else:
         bot_id = data.bot_type
 
-    logging.debug(data.dict())
-
     # create the query
-    # "as" doesn't have proper support in pypika,
+    # "AS" doesn't have proper support in pypika,
     # so we have to write our own query
     q = "SELECT bots.*, \
         bot_types.id as bot_type_id,\
@@ -204,11 +206,16 @@ async def _get_bots_with_details_inflated(
             await con.execute(q, [bot_id])
         rows = await con.fetchall()
         resp = [bots_schema.create_botInDBInflated_from_tuple(row) for row in rows]
+        logging.debug(
+            f"Got the response {[r.dict() for r in resp]} while querying for"
+            f"bots with details {data.dict()}"
+        )
         return resp, None
     except Exception as e:
         logging.error(
             f"Couldn't query bots (inflated) with {data.dict()} with query={q}",
             f" and args={[data.name, bot_id]} due to {e}",
+            stack_info=True,
         )
         return [], None
 
@@ -261,7 +268,7 @@ async def _get_bots_with_details_uninflated(
     except Exception as e:
         logging.error(
             "Couldn't query bots(uninflated) with"
-            + f"{data.dict()} with query={q} due to {e}",
+            f"{data.dict()} with query={q} due to {e}",
         )
         return [], None
 
@@ -273,7 +280,7 @@ async def update_bot_data_with_id(
 
     logging.info(
         "Trying to update the details of the bot with "
-        + f"{id=} to {name=} and {bot_type=}"
+        f"{id=} to {name=} and {bot_type=}"
     )
 
     try:
@@ -304,8 +311,8 @@ async def update_bot_data_with_id(
     except Exception as e:
         # TODO: Need to handle 1. invalid id, 2. duplicate name
         logging.error(
-            f"Unable to update bot data with {id=} to {data.dict()} with query=`{q}`"
-            + f"due to `{e}`"
+            f"Unable to update bot data with {id=} to {data.dict()}"
+            f" with query=`{q}` due to `{e}`"
         )
         return False, e
 
