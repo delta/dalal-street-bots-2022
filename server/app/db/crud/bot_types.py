@@ -2,12 +2,11 @@
 import logging
 from typing import List, Tuple, Union
 
+import db.schemas.bot_types as bot_type_schema
 from aiomysql.cursors import Cursor
 from db.errors import RecordNotFound
 from pydantic import ValidationError
 from pypika import MySQLQuery, Table
-
-import db.schemas.bot_types as bot_type_schema
 
 from .base import log_query
 
@@ -119,8 +118,8 @@ async def get_bot_type_with_given_id(
     try:
         await con.execute(str(q))
         row = await con.fetchone()
-        # response, need to check it
-        if row == None:
+        # response is None if the record does not exist
+        if row is None:
             logging.error(f"bot_type with {id=} doesn't exist")
             return None, RecordNotFound
         resp = bot_type_schema.create_BotTypeInDB_from_tuple(row)

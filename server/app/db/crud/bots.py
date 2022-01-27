@@ -12,7 +12,7 @@ from .base import log_query, log_query_with_arguments
 from .bot_types import get_bot_type_with_given_name
 
 bots = Table("bots")
-bot_types = Table("bot_types")
+# bot_types = Table("bot_types")
 
 
 async def create_bot(
@@ -68,7 +68,8 @@ async def create_bot(
     except Exception as e:
         logging.error(
             f"Couldn't create bot with {name=}"
-            f"{bot_type=} with query=`{q}` due to `{e}`"
+            f"{bot_type=} with query=`{q}` due to `{e}`",
+            stack_info=True,
         )
         return False, e
 
@@ -113,14 +114,19 @@ async def get_all_bots(
         rows = await con.fetchall()
         resp = (
             [bots_schema.create_botInDBInflated_from_tuple(row) for row in rows]
-            if bot_types is True
+            if inflate_bot_type is True
             else [bots_schema.create_BotInDB_from_tuple(row) for row in rows]
         )
+        logging.debug(
+            f"got the resp:{[r.dict() for r in resp]} when querying for all the bots"
+        )
+        logging.info("successfully fetched all bots")
         return resp, None
     except Exception as e:
         logging.error(
             f"Couldn't query all bots with {inflate_bot_type=} with query={q}"
-            + f" due to {e}"
+            f" due to {e}",
+            stack_info=True,
         )
         return [], e
 
@@ -137,7 +143,9 @@ async def query_bots_with_details(
     """Fetches all the bots with the queried details.
     name - returns Bots[] with the given name (List of len 1)
     bot_type - returns Bots[] of the given bot_type.
-    bot_type can be int(bot_type.id) or str(bot_type.name)
+    bot_type can be int(bot_type.id) or str(bot_type.name) when bot_type.name
+    is provided we fetch the bot_type with the given name and query the
+    details
 
     additionally inflate_bot_type parameter can be passed so that bot_type details
     are fetched and returned to the user, this defaults to True (bot_type data is
@@ -164,11 +172,11 @@ async def _get_bots_with_details_inflated(
         logging.error(
             f"Couldn't to query bots with {name=} and {bot_type=}"
             f" as validation failed with the error(s): {e.errors()}",
+            stack_info=True,
         )
         return [], e
 
     bot_id = 0
-    logging.debug(data.dict())
     if type(data.bot_type) is str and data.bot_type != "":
         # name of the bot_type is given, query for the bot_type_id and
         # use the to query the bot data
@@ -210,6 +218,7 @@ async def _get_bots_with_details_inflated(
             f"Got the response {[r.dict() for r in resp]} while querying for"
             f"bots with details {data.dict()}"
         )
+        logging.info(f"Successfully found bots with data={data.dict()} inflated")
         return resp, None
     except Exception as e:
         logging.error(
@@ -235,6 +244,7 @@ async def _get_bots_with_details_uninflated(
         logging.error(
             f"Couldn't to query bots with {name=} and {bot_type=}",
             f" as validation failed with the error(s): {e.errors()}",
+            stack_info=True,
         )
         return [], e
 
@@ -242,6 +252,10 @@ async def _get_bots_with_details_uninflated(
     if type(data.bot_type) is str:
         # name of the bot_type is given, query for the bot_type_id and
         # use the to query the bot data
+        logging.debug(
+            f"bot_type.name=`{data.bot_type}` was given."
+            "Trying to fetch its id from bot_type table"
+        )
         bot_type_data, err = await get_bot_type_with_given_name(con, data.bot_type)
         if err:
             return [], err
@@ -264,11 +278,17 @@ async def _get_bots_with_details_uninflated(
         await con.execute(str(q))
         rows = await con.fetchall()
         resp = [bots_schema.create_BotInDB_from_tuple(row) for row in rows]
+        logging.debug(
+            f"Got the data {[r.dict() for r in resp]} when"
+            f"fetching for data with {data.dict()}"
+        )
+        logging.info(f"Successfully found bots with data={data.dict()} uninflated")
         return resp, None
     except Exception as e:
         logging.error(
             "Couldn't query bots(uninflated) with"
             f"{data.dict()} with query={q} due to {e}",
+            stack_info=True,
         )
         return [], None
 
@@ -335,7 +355,10 @@ async def delete_bot_with_id(
         return True, None
     except Exception as e:
         # TODO: Handle case when the bot with given id doesn't exist
-        logging.error(f"Unable to delete bot with {id=} with query=`{q}` due to `{e}`")
+        logging.error(
+            f"Unable to delete bot with {id=} with query=`{q}` due to `{e}`",
+            stack_info=True,
+        )
         return False, e
 
 
@@ -356,6 +379,7 @@ async def delete_bot_with_given_name(
     except Exception as e:
         # TODO: Handle case when the bot with given name doesn't exist
         logging.error(
-            f"Unable to delete bot with {name=} with query=`{q}` due to `{e}`"
+            f"Unable to delete bot with {name=} with query=`{q}` due to `{e}`",
+            stack_info=True,
         )
         return False, e
