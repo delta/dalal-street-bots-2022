@@ -6,6 +6,7 @@ Create Date: 2022-01-17 01:28:09.873809
 
 """
 import enum
+import logging
 
 import sqlalchemy as sa
 from alembic import op
@@ -27,7 +28,7 @@ class LogLevel(enum.Enum):
 
 
 def upgrade():
-    print("running up migrations for create logs table")
+    logging.info("running up migrations for create logs table")
     op.create_table(
         "logs",
         sa.Column("id", sa.Integer, primary_key=True),
@@ -48,5 +49,5 @@ def upgrade():
 
 
 def downgrade():
-    print("running down migrations for create logs table")
+    logging.info("running down migrations for create logs table")
     op.drop_table("logs")
