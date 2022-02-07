@@ -3,7 +3,6 @@ import logging
 from typing import Any
 
 from aiomysql import Pool, create_pool
-from aiomysql.cursors import Cursor
 from core.config import get_app_settings
 
 loop = asyncio.get_event_loop()
@@ -42,8 +41,6 @@ async def createMySqlConnection() -> Pool:
 
     # loop.run_until_complete(create_db_with_given_loop(loop))
     pool: Pool = await create_db_with_given_loop(loop)
-    conn = await pool.acquire()
-    cur: Cursor = await conn.cursor()
     return pool
 
 

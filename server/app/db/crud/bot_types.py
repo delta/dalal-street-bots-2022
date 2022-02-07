@@ -2,9 +2,8 @@
 import logging
 from typing import List, Tuple, Union
 
-import pymysql
-
 import db.schemas.bot_types as bot_type_schema
+import pymysql
 from aiomysql.cursors import Cursor
 from db.errors import RecordNotFound
 from pydantic import ValidationError
@@ -156,7 +155,7 @@ async def update_bot_type_name(
     try:
         await con.execute(str(q))
         await con.connection.commit()
-        #! Error is not thrown if a bot with the given id doesn't exist
+        # ! Error is not thrown if a bot with the given id doesn't exist
         logging.info(f"Successfully updated bot_type name to `{name}` with {id=}")
         return True, None
     except Exception as e:
