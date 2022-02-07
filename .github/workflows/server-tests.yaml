@@ -65,7 +65,8 @@ jobs:
           DB_HOST: localhost
           DB_PORT: 3306
         run: |
+          cd server
           poetry run alembic upgrade head
-          poetry run ./server/scripts/test
+          poetry run ./scripts/test
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
