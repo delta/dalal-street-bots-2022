@@ -29,7 +29,7 @@ class InterceptHandler(logging.Handler):
 def setup_lg() -> None:
     # intercept everything at the root logger
     logging.root.handlers = [InterceptHandler()]
-    logging.root.setLevel(get_app_settings().lg_level)
+    logging.root.setLevel(get_app_settings().logging_level)
 
     # remove every other logger's handlers
     # and propagate to root logger

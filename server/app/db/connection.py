@@ -35,11 +35,13 @@ async def createMySqlConnection() -> Pool:
             maxsize=max_conn,
             loop=loop,
         )
-        logging.info("Successfully established MySql connection")
+        logging.debug("Successfully established MySql connection")
+        # TODO: Return error if conn fails
         return conn
 
     # loop.run_until_complete(create_db_with_given_loop(loop))
-    return create_db_with_given_loop(loop)
+    pool: Pool = await create_db_with_given_loop(loop)
+    return pool
 
 
 async def closeMySqlConnection(pool: Pool) -> None:

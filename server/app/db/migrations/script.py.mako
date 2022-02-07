@@ -6,6 +6,8 @@ Create Date: ${create_date}
 
 """
 from alembic import op
+import logging
+
 import sqlalchemy as sa
 ${imports if imports else ""}
 
@@ -17,10 +19,10 @@ depends_on = ${repr(depends_on)}
 
 
 def upgrade():
-    print("running up migrations for ${message}")
+    logging.info("running up migrations for ${message}")
     ${upgrades if upgrades else "pass"}
 
 
 def downgrade():
-    print("running down migrations for ${message}")
+    logging.info("running down migrations for ${message}")
     ${downgrades if downgrades else "pass"}

@@ -4,15 +4,8 @@
 SCRIPT=$(readlink -f "$0")
 cd "$(dirname "$SCRIPT")/../"
 
-
-# cd into the server dir
-SCRIPT=$(readlink -f "$0")
-cd "$(dirname "$SCRIPT")/../"
-
-
 set -e
 set -x
-
 
 ./.venv/bin/flake8 app --exclude=app/proto_build
 ./.venv/bin/mypy app --install-types --exclude 'app/proto_build/models' \

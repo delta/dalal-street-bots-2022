@@ -5,6 +5,8 @@ Revises: fb5e5ba377a5
 Create Date: 2022-01-17 01:23:25.555091
 
 """
+import logging
+
 import sqlalchemy as sa
 from alembic import op
 
@@ -18,11 +20,11 @@ depends_on = None
 
 
 def upgrade():
-    print("running up migrations for create bots table")
+    logging.info("running up migrations for create bots table")
     op.create_table(
         "bots",
         sa.Column("id", sa.Integer, primary_key=True),
-        sa.Column("name", sa.String(255), nullable=False, length=255),
+        sa.Column("name", sa.String(255), nullable=False),
         sa.Column(
             "bot_type",
             sa.Integer,
@@ -34,5 +36,5 @@ def upgrade():
 
 
 def downgrade():
-    print("running down migrations for create bots table")
+    logging.info("running down migrations for create bots table")
     op.drop_table("bots")
