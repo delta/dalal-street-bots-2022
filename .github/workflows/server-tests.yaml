@@ -66,6 +66,7 @@ jobs:
           DB_USER: root
           DB_HOST: localhost
           DB_PORT: 3306
+          DB_URI: mysql://root@localhost:3306/dalalstreet_bots
         run: |
           cd server
           cp .example.env .env
