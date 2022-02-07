@@ -37,14 +37,13 @@ async def createMySqlConnection() -> Pool:
             loop=loop,
         )
         logging.debug("Successfully established MySql connection")
+        # TODO: Return error if conn fails
         return conn
 
     # loop.run_until_complete(create_db_with_given_loop(loop))
     pool: Pool = await create_db_with_given_loop(loop)
     conn = await pool.acquire()
     cur: Cursor = await conn.cursor()
-    await cur.execute("SHOW TABLES;")
-    logging.info(cur.description)
     return pool
 
 

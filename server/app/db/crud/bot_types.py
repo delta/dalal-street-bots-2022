@@ -28,7 +28,7 @@ async def insert_bot_type(
         return False, e
 
     # Generating mysql query
-    q = MySQLQuery.into(bot_types).insert("name").insert(data.name)
+    q = MySQLQuery.into(bot_types).columns("name").insert(data.name)
     log_query(str(q))
 
     try:

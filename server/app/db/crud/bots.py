@@ -28,6 +28,7 @@ async def create_bot(
 
     logging.info(f"Trying to create a bot with {name=} {bot_type=}")
 
+    # validating bot data
     if type(bot_type) is int:
         bot_type_id = bot_type
     else:
