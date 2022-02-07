@@ -54,6 +54,9 @@ jobs:
       - name: Generate Proto Stub Files
         run: ./server/scripts/build_proto.sh
 
+      - name: Install mypy types
+        run: echo "y" | mypy --install-types
+
       - name: Run linters
         run: |
           cd ./server
