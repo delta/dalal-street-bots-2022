@@ -2,6 +2,8 @@
 import logging
 from typing import List, Tuple, Union
 
+import pymysql
+
 import db.schemas.bot_types as bot_type_schema
 from aiomysql.cursors import Cursor
 from db.errors import RecordNotFound
@@ -11,6 +13,8 @@ from pypika import MySQLQuery, Table
 from .base import log_query
 
 bot_types = Table("bot_types")
+
+# TODO: add type validation to request
 
 
 async def insert_bot_type(
@@ -40,14 +44,17 @@ async def insert_bot_type(
         return True, None
     except Exception as e:
         # TODO: return a special response for not_unique_error
-
+        # not unique error has status_code=1062
+        if type(e) == pymysql.err.IntegrityError:
+            x = e.args[0] == 1062
+            logging.debug(f"isDuplicateKey={x}")
         logging.error(
             f"Couldn't create new bot_type for data={data.dict()} with {q} due to {e}"
         )
         return False, e
 
 
-async def get_all_bots(
+async def get_all_bot_types(
     con: Cursor,
 ) -> Tuple[List[bot_type_schema.BotTypeInDB], Union[Exception, None]]:
     """Fetches all the bots from the database"""
@@ -139,6 +146,7 @@ async def update_bot_type_name(
     logging.info(f"Trying to the name of the bot with {id=}, to {name}")
 
     # TODO: Add data validation
+    # BUG: Need to check if the bot with the given id exists
 
     # creating query
     q = MySQLQuery.update(bot_types).set(bot_types.name, name).where(bot_types.id == id)
@@ -148,6 +156,7 @@ async def update_bot_type_name(
     try:
         await con.execute(str(q))
         await con.connection.commit()
+        #! Error is not thrown if a bot with the given id doesn't exist
         logging.info(f"Successfully updated bot_type name to `{name}` with {id=}")
         return True, None
     except Exception as e:
@@ -172,7 +181,7 @@ async def delete_bot_type_with_given_id(
 
     try:
         await con.execute(str(q))
-        await con.commit()
+        await con.connection.commit()
         logging.info(f"Successfully deleted bot_type with {id=}")
         return True, None
     except Exception as e:

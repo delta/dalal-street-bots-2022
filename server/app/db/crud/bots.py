@@ -12,7 +12,6 @@ from .base import log_query, log_query_with_arguments
 from .bot_types import get_bot_type_with_given_name
 
 bots = Table("bots")
-# bot_types = Table("bot_types")
 
 
 async def create_bot(
@@ -30,6 +29,7 @@ async def create_bot(
 
     # validating bot data
     if type(bot_type) is int:
+        # BUG: if the bot_type id is wrong, validation
         bot_type_id = bot_type
     else:
         # the bot_type name is given. get its id from bot_types
@@ -48,6 +48,7 @@ async def create_bot(
     try:
         data = bots_schema.CreateBot(name=name, bot_type=bot_type_id)
     except ValidationError as e:
+        # error code = 1452, is thrown if the bot_type doesn't exist
         logging.error(f"Create bot validation failed due to {e.errors()}")
         return False, e
 
@@ -111,8 +112,18 @@ async def get_all_bots(
     log_query(str(q))
 
     try:
-        await con.execute(q)
+        await con.execute(str(q))
         rows = await con.fetchall()
+        """con.description -> example_response
+        (
+        ('id', 3, None, 11, 11, 0, False),
+        ('name', 253, None, 1020, 1020, 0, False),
+        ('bot_type', 3, None, 11, 11, 0, False),
+        ('created_at', 7, None, 19, 19, 0, False),
+        ('updated_at', 7, None, 19, 19, 0, False),
+        ('bot_type_id', 3, None, 11, 11, 0, False),
+        ('bot_type_name', 253, None, 1020, 1020, 0, False))"""
+
         resp = (
             [bots_schema.create_botInDBInflated_from_tuple(row) for row in rows]
             if inflate_bot_type is True
@@ -127,7 +138,7 @@ async def get_all_bots(
         logging.error(
             f"Couldn't query all bots with {inflate_bot_type=} with query={q}"
             f" due to {e}",
-            stack_info=True,
+            exc_info=True,
         )
         return [], e
 
@@ -259,6 +270,10 @@ async def _get_bots_with_details_uninflated(
         )
         bot_type_data, err = await get_bot_type_with_given_name(con, data.bot_type)
         if err:
+            # BUG: (minor, consitency)
+            # We get a Record Not Found error if the bot_type == string
+            # as we are checking for bot_type above
+            # but if bot_type==int. we get No Error and empty List
             return [], err
         bot_id = bot_type_data.id  # type: ignore
     else:
@@ -268,12 +283,13 @@ async def _get_bots_with_details_uninflated(
     if data.get_query_on() == "name":
         criteria.append(bots.name == data.name)
     else:
-        criteria.append(bots.bot_id == bot_id)
+        criteria.append(bots.bot_type == bot_id)
 
     # creating query
     # selecting * -> criteria contraint
-    q = MySQLQuery.from_("bots").select("*").Where(Criterion.all(criteria))
+    q = MySQLQuery.from_("bots").select("*").where(Criterion.all(criteria))
 
+    log_query(str(q))
     # executing the query
     try:
         await con.execute(str(q))
@@ -320,7 +336,7 @@ async def update_bot_data_with_id(
     if data.name != "":
         q = q.set(bots.name, data.name)
     if data.bot_type != 0:
-        q.set(bots.bot_type, data.bot_type)
+        q = q.set(bots.bot_type, data.bot_type)
 
     log_query(str(q))
 
@@ -331,6 +347,7 @@ async def update_bot_data_with_id(
         return True, None
     except Exception as e:
         # TODO: Need to handle 1. invalid id, 2. duplicate name
+        # Invalid id (no foregin key status code = 1452)
         logging.error(
             f"Unable to update bot data with {id=} to {data.dict()}"
             f" with query=`{q}` due to `{e}`"
@@ -353,6 +370,7 @@ async def delete_bot_with_id(
         await con.execute(str(q))
         await con.connection.commit()
         logging.info(f"Successfully deleted bot with {id=}")
+        # BUG: no error is thrown when id doesn't exist
         return True, None
     except Exception as e:
         # TODO: Handle case when the bot with given id doesn't exist
@@ -376,6 +394,7 @@ async def delete_bot_with_given_name(
         await con.execute(str(q))
         await con.connection.commit()
         logging.info(f"Successfully deleted bot with {name=}")
+        # BUG: no error is thrown when id doesn't exist
         return True, None
     except Exception as e:
         # TODO: Handle case when the bot with given name doesn't exist
