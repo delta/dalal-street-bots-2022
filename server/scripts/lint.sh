@@ -13,6 +13,7 @@ cd "$(dirname "$SCRIPT")/../"
 set -e
 set -x
 
+echo "y" | mypy --install-types
 
 ./.venv/bin/flake8 app --exclude=app/proto_build
 ./.venv/bin/mypy app --install-types --exclude 'app/proto_build/models' \
