@@ -1,31 +1,35 @@
-name: Lint-Server
+name: Tests
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: [push, pull_request]
 
 jobs:
   lint:
-    name: Lint code
+    name: Run tests
 
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.9"]
+        python-version: [3.9]
+
+    services:
+      mysql:
+        image: mysql:8.0.21
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: dalalstreet_bots
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@master
+
       - name: Set up Python
         uses: actions/setup-python@v2.2.2
         with:
           python-version: ${{ matrix.python-version }}
-          submodules: recursive
 
       - name: move to server
         run: cd ./server
@@ -36,7 +40,7 @@ jobs:
       # - uses: actions/cache@v2.1.6
       #   id: cache-dev-deps
       #   with:
-      #     path: ./server/.venv
+      #     path: .venv
       #     key: venv-dev-${{ runner.os }}-py-${{ matrix.python-version }}-poetry-${{ hashFiles('poetry.lock') }}
       #     restore-keys: |
       #       venv-dev-${{ runner.os }}-py-${{ matrix.python-version }}-poetry-
@@ -50,11 +54,18 @@ jobs:
           cd ./server
           poetry config virtualenvs.in-project true
           poetry install
-
-      - name: Generate Proto Stub Files
-        run: ./server/scripts/build_proto.sh
-
-      - name: Run linters
+      - name: Create database if it doesn't exist already
+        run: mysql --host 127.0.0.1 --port 3306 -u root -e "CREATE DATABASE IF NOT EXISTS dalalstreet_bots"
+      - name: Run tests
+        env:
+          DB_SCHEME: mysql
+          DB_NAME: dalalstreet_bots
+          DB_PWD: ""
+          DB_USER: root
+          DB_HOST: localhost
+          DB_PORT: 3306
         run: |
-          cd ./server
-          echo "y" | poetry run ./scripts/lint.sh
+          poetry run alembic upgrade head
+          poetry run ./server/scripts/test
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2.1.0
