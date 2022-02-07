@@ -58,6 +58,8 @@ jobs:
         run: mysql --host 127.0.0.1 --port 3306 -u root -e "CREATE DATABASE IF NOT EXISTS dalalstreet_bots"
       - name: Run tests
         env:
+          APP_ENV: test
+          GRPC_SERVER_URI: https://localhost:8000
           DB_SCHEME: mysql
           DB_NAME: dalalstreet_bots
           DB_PWD: ""
@@ -66,6 +68,7 @@ jobs:
           DB_PORT: 3306
         run: |
           cd server
+          cp .example.env .env
           poetry run alembic upgrade head
           poetry run ./scripts/test
       - name: Upload coverage to Codecov
