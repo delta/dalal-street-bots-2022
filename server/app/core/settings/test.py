@@ -10,8 +10,6 @@ class TestAppSettings(AppSettings):
     reload: bool = True
     title: str = "Dalal Street Bots - Test"
 
-    grpc_server_uri: AnyHttpUrl = Field(...)
-
     # db: DatabaseDsn = Field(DatabaseDsn(_env_file="test.env"))
 
     # Generally we would want to see debug level during test

@@ -11,5 +11,3 @@ class DevAppSettings(AppSettings):
     title: str = "Dalal Street Bots - Dev"
 
     logging_level: int = logging.DEBUG
-
-    grpc_server_uri: AnyHttpUrl = Field(...)
