@@ -47,3 +47,4 @@ async def createMySqlConnection() -> Pool:
 async def closeMySqlConnection(pool: Pool) -> None:
     """Closes the mysql connection pool"""
     pool.close()
+    logging.info("Successfully disconnected from db")
