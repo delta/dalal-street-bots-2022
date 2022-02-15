@@ -18,11 +18,11 @@ class GrpcManager:
             except Exception as e:
                 # Unable to find the file, throw an error
                 logging.error(f"Unable to open cert file from {path}")
-            creds = grpc.aio.ssl_channel_credentials(cert)
+            creds = grpc.ssl_channel_credentials(cert)
             logging.info(
                 f"Trying to connect to grpc server on port={get_app_settings().grpc_server_port}"
             )
-            channel = grpc.secure_channel(
+            channel = grpc.aio.secure_channel(
                 "localhost:%d" % get_app_settings().grpc_server_port,
                 creds,
                 options=(
@@ -35,10 +35,15 @@ class GrpcManager:
             self._channel = channel
             self.action_stub = DalalMessage_pb2_grpc.DalalActionServiceStub(channel)
             self.stream_stub = DalalMessage_pb2_grpc.DalalStreamServiceStub(channel)
+            self.initialize_action()
+
             logging.info("Successfully connected to the GRPC server")
 
         except Exception as e:
             logging.error("err : ", e)
+
+    def initialize_action(self):
+        return
 
     async def close_connection(self):
         """Closes the aio grpc connection"""
