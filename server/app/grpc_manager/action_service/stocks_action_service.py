@@ -47,3 +47,14 @@ class StockActionService(BaseActionService):
             req = PlaceOrderRequest(stock_id=stock_id, stock_quantity=stock_quantity, price=price, order_type=order_type, is_ask=is_ask)
 
             response: PlaceOrderResponse = await self.action_stub.PlaceOrder(req, metadata=self.getMd(bot_id))
+        except Exception as e:
+            if is_ask 
+                logging.error(
+                    f"Error {e} while tring to place sell order"
+                )
+            else
+                logging.error(
+                    f"Error {e} while tring to place buy order"
+                )
+        
+        return "Failed",400
