@@ -13,7 +13,7 @@ class StockActionService(BaseActionService):
     try:
         req = BuyStocksFromExchangeRequest(stock_id=stock_id, stock_quantity=stock_quantity)
 
-        response: BuyStocksFromExchangeResponse = await self.action_stub.BuyStocksFromExchange(req,metadata=self.getMd(bot_id))
+        response: BuyStocksFromExchangeResponse = await self.action_stub.BuyStocksFromExchange(req, metadata=self.getMd(bot_id))
 
         return response
     
@@ -30,7 +30,7 @@ class StockActionService(BaseActionService):
     try:
         req = CancelOrderRequest(order_id=order_id, is_ask=is_ask)
 
-        response: CancelOrderResponse = await self.action_stub.CancelOrder(req,metadata=self.getMd(bot_id))
+        response: CancelOrderResponse = await self.action_stub.CancelOrder(req, metadata=self.getMd(bot_id))
 
         return response
     
@@ -46,4 +46,4 @@ class StockActionService(BaseActionService):
         try:
             req = PlaceOrderRequest(stock_id=stock_id, stock_quantity=stock_quantity, price=price, order_type=order_type, is_ask=is_ask)
 
-            response: PlaceOrderResponse = await self.action_stub.PlaceOrder(req,metadata=self.getMd(bot_id))
+            response: PlaceOrderResponse = await self.action_stub.PlaceOrder(req, metadata=self.getMd(bot_id))
