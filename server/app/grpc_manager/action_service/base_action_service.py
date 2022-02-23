@@ -19,11 +19,3 @@ class BaseActionService:
         self.channel = channel
         self.action_stub = action_stub
         self.metadata = metadata
-
-    def get_bot_meta_data(self):
-        """Gets bot metadata"""
-        return self.metadata.get_bot_meta_data()
-
-    def get_admin_meta_data(self):
-        """Gets admin metadata"""
-        return self.metadata.get_admin_meta_data()
