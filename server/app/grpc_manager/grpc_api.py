@@ -4,8 +4,9 @@ import os
 import grpc
 import proto_build.DalalMessage_pb2_grpc as DalalMessage_pb2_grpc
 
-from action_service.auth_action_service import AuthActionService
-from action_service.bot_action_service import BotActionService
+from .meta_data import MetaDataMiddleware
+from .action_service.auth_action_service import AuthActionService
+from .action_service.bot_action_service import BotActionService
 
 from core.config import get_app_settings
 
@@ -40,13 +41,16 @@ class GrpcManager:
             self.action_stub = DalalMessage_pb2_grpc.DalalActionServiceStub(channel)
             self.stream_stub = DalalMessage_pb2_grpc.DalalStreamServiceStub(channel)
             self.initialize_action()
-
             logging.info("Successfully connected to the GRPC server")
 
         except Exception as e:
             logging.error("err : ", e)
 
     def initialize_action(self):
+        # Init metadata
+        self.metadata = MetaDataMiddleware()
+
+        # Init actions
         self.auth_action_service = AuthActionService(
             channel=self._channel, action_stub=self.action_stub
         )
