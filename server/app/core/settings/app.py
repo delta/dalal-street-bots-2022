@@ -21,6 +21,7 @@ class AppSettings(BaseAppSettings):
     title: str = "Dalal Street Bots"
 
     grpc_server_port: int = 8000
+    bot_secret: str = "hellobots"
 
     def fastapi_kwargs(self) -> Dict[str, Any]:
         return {
