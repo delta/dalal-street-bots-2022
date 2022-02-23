@@ -52,10 +52,10 @@ class GrpcManager:
 
         # Init actions
         self.auth_action_service = AuthActionService(
-            channel=self._channel, action_stub=self.action_stub
+            channel=self._channel, action_stub=self.action_stub, metadata=self.metadata
         )
         self.bot_action_service = BotActionService(
-            channel=self._channel, action_stub=self.action_stub
+            channel=self._channel, action_stub=self.action_stub, metadata=self.metadata
         )
         return
 
