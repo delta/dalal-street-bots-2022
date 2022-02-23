@@ -7,7 +7,7 @@ from .base_action_service import BaseActionService
 from proto_build.actions.CreateBot_pb2 import CreateBotRequest, CreateBotResponse
 
 
-class AuthActionService(BaseActionService):
+class BotActionService(BaseActionService):
     """Helper class to handle all bot-related grpc requests"""
 
     async def create_bot(self, bot_user_id: int) -> CreateBotResponse:

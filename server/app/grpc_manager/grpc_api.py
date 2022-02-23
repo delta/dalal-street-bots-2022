@@ -3,6 +3,10 @@ import os
 
 import grpc
 import proto_build.DalalMessage_pb2_grpc as DalalMessage_pb2_grpc
+
+from action_service.auth_action_service import AuthActionService
+from action_service.bot_action_service import BotActionService
+
 from core.config import get_app_settings
 
 
@@ -43,6 +47,12 @@ class GrpcManager:
             logging.error("err : ", e)
 
     def initialize_action(self):
+        self.auth_action_service = AuthActionService(
+            channel=self._channel, action_stub=self.action_stub
+        )
+        self.bot_action_service = BotActionService(
+            channel=self._channel, action_stub=self.action_stub
+        )
         return
 
     async def close_connection(self):
