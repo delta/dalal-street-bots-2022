@@ -1,18 +1,18 @@
-"""A file containing all the meta-data related logic"""
+"""A file containing all the metadata related logic"""
 from typing import Any, List, Tuple
 from app.core.config import get_app_settings
 
 
-class MetaDataMiddleware:
-    """A class to initialize bot meta data, and fetch them.
-    We pass a instance of it to all action and stream service to get the meta-data."""
+class MetadataMiddleware:
+    """A class to initialize bot metadata, and fetch them.
+    We pass a instance of it to all action and stream service to get the metadata."""
 
     bot_secret: str = get_app_settings().bot_secret
     admin_id: int = 0
     admin_session_id: str = ""
 
     def is_metadata_initialized(self) -> bool:
-        """check to see if the meta data is initialized"""
+        """check to see if the metadata is initialized"""
         try:
             assert self.admin_id
             assert self.admin_session_id
@@ -34,20 +34,20 @@ class MetaDataMiddleware:
         self.set_admin_session_id(session_id)
 
     def get_bot_meta_data(self) -> List[Tuple[str, str]]:
-        """Returns bot meta-data"""
+        """Returns bot metadata"""
         # BUG: low-priority.
         # We check for if both bot and admin metadata has been initialized
         # We only need to check one
         if not self.is_metadata_initialized:
             # TODO: create a type of error for it
-            raise Exception("Meta data not initialied")
+            raise Exception("Metadata not initialied")
         return [("bot_secret", self.bot_secret), ("bot_user_id", str(self.admin_id))]
 
     def get_admin_meta_data(self) -> List[Tuple[str, str]]:
-        "returns a admin meta-data"
+        "returns a admin metadata"
         if not self.is_metadata_initialized:
             # TODO: create a type of error for it
-            raise Exception("Meta data not initialied")
+            raise Exception("Metadata not initialied")
         return [
             ("sessionid", self.admin_session_id),
             ("bot_user_id", str(self.admin_id)),

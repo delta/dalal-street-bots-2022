@@ -4,7 +4,7 @@ import os
 import grpc
 import proto_build.DalalMessage_pb2_grpc as DalalMessage_pb2_grpc
 
-from .meta_data import MetaDataMiddleware
+from .metadata import MetadataMiddleware
 from .action_service.auth_action_service import AuthActionService
 from .action_service.bot_action_service import BotActionService
 
@@ -48,7 +48,7 @@ class GrpcManager:
 
     def initialize_action(self):
         # Init metadata
-        self.metadata = MetaDataMiddleware()
+        self.metadata = MetadataMiddleware()
 
         # Init actions
         self.auth_action_service = AuthActionService(
