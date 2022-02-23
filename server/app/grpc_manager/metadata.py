@@ -1,6 +1,6 @@
 """A file containing all the metadata related logic"""
 from typing import Any, List, Tuple
-from app.core.config import get_app_settings
+from core.config import get_app_settings
 
 
 class MetadataMiddleware:
