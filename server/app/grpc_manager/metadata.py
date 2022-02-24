@@ -43,6 +43,11 @@ class MetadataMiddleware:
             raise Exception("Metadata not initialied")
         return [("bot_secret", self.bot_secret), ("bot_user_id", str(self.admin_id))]
 
+    def get_bot_meta_data_with_given_user_id(self, id: int) -> List[Tuple[str, str]]:
+        """Returns bot meta data with the given bot id"""
+
+        return [("bot_secret", self.bot_secret), ("bot_user_id", str(id))]
+
     def get_admin_meta_data(self) -> List[Tuple[str, str]]:
         "returns a admin metadata"
         if not self.is_metadata_initialized:

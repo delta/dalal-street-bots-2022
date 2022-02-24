@@ -1,4 +1,4 @@
-"""Class manager for all auth action service actions"""
+"""Class manager for all bot action service actions"""
 import logging
 from typing import Tuple, Union
 from .base_action_service import BaseActionService
@@ -39,3 +39,4 @@ class BotActionService(BaseActionService):
             logging.error(
                 f"Unable to create a bot with name={bot_name} due to {e}", exc_info=True
             )
+            return None, e
