@@ -5,6 +5,8 @@ import grpc
 import proto_build.DalalMessage_pb2_grpc as DalalMessage_pb2_grpc
 
 from .metadata import MetadataMiddleware
+from .utils import UtilTypes
+
 from .action_service.auth_action_service import AuthActionService
 from .action_service.bot_action_service import BotActionService
 
@@ -40,6 +42,7 @@ class GrpcManager:
             self._channel = channel
             self.action_stub = DalalMessage_pb2_grpc.DalalActionServiceStub(channel)
             self.stream_stub = DalalMessage_pb2_grpc.DalalStreamServiceStub(channel)
+            self.utils = UtilTypes()
             self.initialize_action()
             logging.info("Successfully connected to the GRPC server")
 
