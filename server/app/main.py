@@ -29,3 +29,5 @@ app.add_event_handler("shutdown", createStopAppHandler(app))
 async def read_root() -> Any:
     # TODO: fix return type
     return {"Dalal": "ToTheMoon"}
+
+  
