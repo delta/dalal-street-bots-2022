@@ -1,9 +1,6 @@
 import logging
 from typing import Any, Dict
 
-from pydantic import AnyHttpUrl
-from pydantic.tools import parse_obj_as
-
 from .base import BaseAppSettings
 
 
@@ -20,7 +17,8 @@ class AppSettings(BaseAppSettings):
     redoc_url: str = "/redoc"
     title: str = "Dalal Street Bots"
 
-    grpc_server_uri: AnyHttpUrl = parse_obj_as(AnyHttpUrl, ("https://localhost:8000"))
+    grpc_server_port: int = 8000
+    bot_secret: str = "hellobots"
 
     def fastapi_kwargs(self) -> Dict[str, Any]:
         return {
