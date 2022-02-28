@@ -3,14 +3,12 @@ import os
 
 import grpc
 import proto_build.DalalMessage_pb2_grpc as DalalMessage_pb2_grpc
-
-from .metadata import MetadataMiddleware
-from .utils import UtilTypes
+from core.config import get_app_settings
 
 from .action_service.auth_action_service import AuthActionService
 from .action_service.bot_action_service import BotActionService
-
-from core.config import get_app_settings
+from .metadata import MetadataMiddleware
+from .utils import UtilTypes
 
 
 class GrpcManager:
@@ -22,12 +20,13 @@ class GrpcManager:
             path = dir_path + "/../../certs/grpc-server.crt"
             try:
                 cert = open(path).read().encode("utf8")
-            except Exception as e:
+            except Exception:
                 # Unable to find the file, throw an error
                 logging.error(f"Unable to open cert file from {path}")
             creds = grpc.ssl_channel_credentials(cert)
             logging.info(
-                f"Trying to connect to grpc server on port={get_app_settings().grpc_server_port}"
+                f"Trying to connect to grpc server on"
+                f"port={get_app_settings().grpc_server_port}"
             )
             channel = grpc.aio.secure_channel(
                 "localhost:%d" % get_app_settings().grpc_server_port,
@@ -49,7 +48,7 @@ class GrpcManager:
         except Exception as e:
             logging.error("err : ", e)
 
-    def initialize_action(self):
+    def initialize_action(self) -> None:
         # Init metadata
         self.metadata = MetadataMiddleware()
 
@@ -62,9 +61,10 @@ class GrpcManager:
         )
         return
 
-    async def close_connection(self):
+    async def close_connection(self) -> None:
         """Closes the aio grpc connection"""
-        # TODO: When intregrating with streams, need to gracefully close all streams before
-        # closing the connection (Adding it here as a reminder)
+        # TODO: When intregrating with streams, need to gracefully
+        # close all streams before closing the connection
+        # (Adding it here as a reminder)
         logging.info("Closing the connection with grpc server")
         await self._channel.close()

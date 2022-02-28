@@ -1,6 +1,8 @@
-from importlib.metadata import metadata
+from typing import Any
+
 from grpc.aio import Channel
 from proto_build.DalalMessage_pb2_grpc import DalalActionService
+
 from ..metadata import MetadataMiddleware
 
 
@@ -13,9 +15,9 @@ class BaseActionService:
         channel: Channel,
         action_stub: DalalActionService,
         metadata: MetadataMiddleware,
-        *args,
-        **kwargs,
-    ):
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         self.channel = channel
         self.action_stub = action_stub
         self.metadata = metadata

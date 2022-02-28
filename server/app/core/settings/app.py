@@ -1,9 +1,6 @@
 import logging
 from typing import Any, Dict
 
-from pydantic import AnyHttpUrl
-from pydantic.tools import parse_obj_as
-
 from .base import BaseAppSettings
 
 

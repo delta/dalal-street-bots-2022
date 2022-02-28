@@ -1,9 +1,10 @@
 """Class manager for all bot action service actions"""
 import logging
 from typing import Tuple, Union
-from .base_action_service import BaseActionService
 
 from proto_build.actions.CreateBot_pb2 import CreateBotRequest, CreateBotResponse
+
+from .base_action_service import BaseActionService
 
 
 class BotActionService(BaseActionService):
@@ -23,9 +24,11 @@ class BotActionService(BaseActionService):
             )
 
             if resp.status_code > 0:
-                # Some error occurred, sending resp response and status_message as response
+                # Some error occurred, sending resp responses
+                # and status_message as response
                 logging.info(
-                    f"creating a bot with name={bot_name} failed due to={resp.status_message}"
+                    f"creating a bot with name={bot_name}"
+                    f"failed due to={resp.status_message}"
                 )
                 return resp, resp.status_message
 

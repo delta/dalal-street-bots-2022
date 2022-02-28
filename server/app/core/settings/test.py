@@ -1,7 +1,5 @@
 import logging
 
-from pydantic import AnyHttpUrl, Field
-
 from .app import AppSettings
 
 

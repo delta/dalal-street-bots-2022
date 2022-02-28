@@ -1,21 +1,21 @@
 """Class manager for all order related action service actions"""
 
-"""Class manager for all bot action service actions"""
 import logging
 from typing import Tuple, Union
-from .base_action_service import BaseActionService
 
 from proto_build.actions.CancelOrder_pb2 import CancelOrderRequest, CancelOrderResponse
-from proto_build.actions.PlaceOrder_pb2 import PlaceOrderRequest, PlaceOrderResponse
 from proto_build.actions.GetMyOrders_pb2 import (
-    GetMyOpenOrdersRequest,
-    GetMyOpenOrdersResponse,
-    GetMyClosedBidsRequest,
     GetMyClosedAsksRequest,
     GetMyClosedAsksResponse,
+    GetMyClosedBidsRequest,
     GetMyClosedBidsResponse,
+    GetMyOpenOrdersRequest,
+    GetMyOpenOrdersResponse,
 )
+from proto_build.actions.PlaceOrder_pb2 import PlaceOrderRequest, PlaceOrderResponse
 from proto_build.models.OrderType_pb2 import OrderType
+
+from .base_action_service import BaseActionService
 
 
 class OrderActionService(BaseActionService):
@@ -24,7 +24,7 @@ class OrderActionService(BaseActionService):
     async def candel_order(
         self, bot_id: int, order_id: int, is_ask: bool
     ) -> Tuple[Union[CancelOrderResponse, None], Union[Exception, None]]:
-        """Cancel order request"""
+        """Cancel order request for the given bot id"""
 
         order_details = {
             "bot_id": bot_id,
@@ -45,7 +45,8 @@ class OrderActionService(BaseActionService):
             if resp.status_code > 0:
                 # Some error occurred, sending resp and status_message as response
                 logging.info(
-                    f"cancel order with {order_details=} failed due to={resp.status_message}"
+                    f"cancel order with {order_details=}"
+                    f"failed due to={resp.status_message}"
                 )
                 return resp, resp.status_message
 
@@ -122,7 +123,7 @@ class OrderActionService(BaseActionService):
     async def get_my_open_orders(
         self, bot_id: int
     ) -> Tuple[Union[GetMyOpenOrdersResponse, None], Union[Exception, None]]:
-        """Get my open orders request"""
+        """Get my open orders request for the given bot id"""
 
         order_details = {
             "bot_id": bot_id,
@@ -141,7 +142,8 @@ class OrderActionService(BaseActionService):
             if resp.status_code > 0:
                 # Some error occurred, sending resp and status_message as response
                 logging.info(
-                    f"my open orders with {order_details=} failed due to={resp.status_message}"
+                    f"my open orders with {order_details=}"
+                    f"failed due to={resp.status_message}"
                 )
                 return resp, resp.status_message
             logging.info(f"Successfully got my open orders with {order_details=}")
@@ -161,7 +163,7 @@ class OrderActionService(BaseActionService):
     async def get_my_closed_bids(
         self, bot_id: int, count: int, last_order_id: int
     ) -> Tuple[Union[GetMyClosedBidsResponse, None], Union[Exception, None]]:
-        """Get my closed bids request"""
+        """Get my closed bids request for the given bot-id"""
 
         order_details = {
             "bot_id": bot_id,
@@ -184,7 +186,8 @@ class OrderActionService(BaseActionService):
             if resp.status_code > 0:
                 # Some error occurred, sending resp and status_message as response
                 logging.info(
-                    f"my closed bid orders with {order_details=} failed due to={resp.status_message}"
+                    f"my closed bid orders with {order_details=}"
+                    f"failed due to={resp.status_message}"
                 )
                 return resp, resp.status_message
 
@@ -206,7 +209,7 @@ class OrderActionService(BaseActionService):
     async def get_my_closed_asks(
         self, bot_id: int, count: int, last_order_id: int
     ) -> Tuple[Union[GetMyClosedAsksResponse, None], Union[Exception, None]]:
-        """Get my closed asks request"""
+        """Get my closed asks request for the given bot id"""
 
         order_details = {
             "bot_id": bot_id,
@@ -229,7 +232,8 @@ class OrderActionService(BaseActionService):
             if resp.status_code > 0:
                 # Some error occurred, sending resp and status_message as response
                 logging.info(
-                    f"my closed ask orders with {order_details=} failed due to={resp.status_message}"
+                    f"my closed ask orders with {order_details=}"
+                    f"failed due to={resp.status_message}"
                 )
                 return resp, resp.status_message
             logging.info(f"Successfully got my closed ask orders with {order_details=}")
