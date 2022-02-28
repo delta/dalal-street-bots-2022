@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter  ,Routes, Route} from "react-router-dom";
 import {
     ChakraProvider,
     Box,
@@ -29,22 +29,19 @@ import { Logo } from './Logo';
          </VStack>
        </Grid>
      </Box>
-    <Router>
-       <div>
-         <nav>
-           <ul>
-             <li>
-               <Link to="/">{Login}</Link>
-             </li>
-           </ul>
-         </nav>
-         <Switch>
-           <Route path="/">
-             <Login />
-           </Route>
-         </Switch>
-       </div>
-     </Router>   
+     <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />}>
+          <Login/>
+        </Route>
+      </Routes>
+      <Routes>
+        <Route path="/login" element={<Login />}>
+          <App/>
+        </Route>
+      </Routes>
+    </BrowserRouter>
+        
    </ChakraProvider>
 );
 
