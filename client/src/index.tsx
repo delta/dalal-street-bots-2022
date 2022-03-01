@@ -10,8 +10,7 @@ import * as serviceWorker from './serviceWorker';
 ReactDOM.render(
     <React.StrictMode>
         <ColorModeScript />
-        <App />
-        
+        <App /> 
     </React.StrictMode>,
     document.getElementById('root')
 );
