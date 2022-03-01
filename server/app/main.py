@@ -30,4 +30,3 @@ async def read_root() -> Any:
     # TODO: fix return type
     return {"Dalal": "ToTheMoon"}
 
-  
