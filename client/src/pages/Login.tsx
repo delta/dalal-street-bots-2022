@@ -4,11 +4,10 @@ import * as React from 'react';
 export const Login = () => {
     return (
       <div>
-      <Grid container justify="center">
+      <Grid container direction="column" alignItems="center"justify="center">
         <Box
-            w={['full', 'md']}
-            p={[8, 10]}
-            mt={[20, '10vh']}
+            p={[10, 10]}
+            mt={[50, '10vh']}
             border={['none', '1px']}
             borderColor={['', 'gray']}
             borderRadius={15}
