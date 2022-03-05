@@ -48,13 +48,13 @@ class QueryBot(BaseModel):
         name = values.get("name", "")
         bot_type = values.get("bot_type", 0)
         server_bot_id = values.get("server_bot_id", 0)
-        
+
         # checks to see if the values are valid
         is_valid_name = name != ""
         is_valid_server_bot_id = server_bot_id != 0
         # a more comprehensive check is needed for bot_type
         is_valid_bot_type = False
-        
+
         if type(bot_type is str):
             if bot_type == "" or bot_type == "0":
                 is_valid_bot_type = False
@@ -67,17 +67,16 @@ class QueryBot(BaseModel):
             else:
                 is_valid_bot_type = True
 
-        if (not is_valid_name and not is_valid_bot_type 
-            and not is_valid_server_bot_id):
+        if not is_valid_name and not is_valid_bot_type and not is_valid_server_bot_id:
             helpful_multiple_query_error_message = (
-                f"query of `name='{name}'`, `bot_type='{bot_type}'`" 
+                f"query of `name='{name}'`, `bot_type='{bot_type}'`"
                 f"`server_bot_id={server_bot_id}` is not valid. Provide one"
                 " value for 'bot_type' or 'name' or 'server_bot_id'"
             )
             raise ValueError(helpful_multiple_query_error_message)
 
         helpful_multiple_query_error_message = (
-            f"query of `name='{name}'`, `bot_type='{bot_type}'`" 
+            f"query of `name='{name}'`, `bot_type='{bot_type}'`"
             f"`server_bot_id={server_bot_id}` is not valid. You can"
             "you can query on one of 'bot_type' or"
             " 'name' or 'server_bot_id'"
@@ -95,11 +94,11 @@ class QueryBot(BaseModel):
             if values["_query_on"]:
                 raise ValueError(helpful_multiple_query_error_message)
             values["_query_on"] = "server_bot_id"
-        
+
         # typecasting bot_type
         if str(bot_type).isnumeric():
             values["bot_type"] = int(bot_type)
-        
+
         return values
 
 
@@ -144,7 +143,7 @@ def create_BotInDB_from_tuple(data: Tuple[Any, ...]) -> BotInDB:
         bot_type=data[2],
         created_at=data[3],
         updated_at=data[4],
-        server_bot_id=data[5]
+        server_bot_id=data[5],
     )
 
 
@@ -160,8 +159,8 @@ def create_botInDBInflated_from_tuple(data: Tuple[Any, ...]) -> BotInDBInflated:
     # (but the docs are non-existant, need to check source code )
 
     """Row Structure
-        (id, name, bot_type, created_at, updated_at, server_bot_id, bot_type_id, bot_type_name)
-        ( 0,    1,        2,          3,          4,             5,           6,             7)
+    (id, name, bot_type, created_at, updated_at, server_bot_id, bot_type_id, bot_type_name) # noqa: E501
+    ( 0,    1,        2,          3,          4,             5,           6,             7) # noqa: E501
         ### DIFFERENT FOR DIFFERENT QUERIES
     """
 
