@@ -11,6 +11,7 @@ from .timestamp import TimestampInDBPlugin
 class BotBase(BaseModel):
     name: str
     bot_type: int
+    server_bot_id: int
 
 
 class BotInDB(BotBase, TimestampInDBPlugin):
@@ -34,6 +35,7 @@ class CreateBot(BotBase):
 class QueryBot(BaseModel):
     name: str = Field("")
     bot_type: Union[str, int] = Field(0)
+    server_bot_id: int = Field(0)
 
     _query_on = ""
 
@@ -42,11 +44,17 @@ class QueryBot(BaseModel):
 
     @root_validator
     def check_valid_queried(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        "Checks if either of name or bot_type is given"
+        "Checks if either of name or bot_type or server_bot_id is given"
         name = values.get("name", "")
         bot_type = values.get("bot_type", 0)
+        server_bot_id = values.get("server_bot_id", 0)
+        
+        # checks to see if the values are valid
         is_valid_name = name != ""
+        is_valid_server_bot_id = server_bot_id != 0
+        # a more comprehensive check is needed for bot_type
         is_valid_bot_type = False
+        
         if type(bot_type is str):
             if bot_type == "" or bot_type == "0":
                 is_valid_bot_type = False
@@ -59,27 +67,39 @@ class QueryBot(BaseModel):
             else:
                 is_valid_bot_type = True
 
-        if not is_valid_name and not is_valid_bot_type:
-            helpful_error_message = (
-                f"query of `name='{name}'` and `bot_type='{bot_type}'` "
-                "is not valid. Provide one value for 'bot_type' or 'name'"
+        if (not is_valid_name and not is_valid_bot_type 
+            and not is_valid_server_bot_id):
+            helpful_multiple_query_error_message = (
+                f"query of `name='{name}'`, `bot_type='{bot_type}'`" 
+                f"`server_bot_id={server_bot_id}` is not valid. Provide one"
+                " value for 'bot_type' or 'name' or 'server_bot_id'"
             )
-            raise ValueError(helpful_error_message)
-        if is_valid_bot_type and is_valid_name:
-            # Both the values cannot be queried, only one can be queried at a time
-            # so return a error
-            helpful_error_message = (
-                f"query of `name='{name}'` and `bot_type='{bot_type}'` "
-                "is not valid. You can only query with either one value of"
-                " 'bot_type' or 'name'. You cannot provide both values."
-            )
-            raise ValueError(helpful_error_message)
+            raise ValueError(helpful_multiple_query_error_message)
+
+        helpful_multiple_query_error_message = (
+            f"query of `name='{name}'`, `bot_type='{bot_type}'`" 
+            f"`server_bot_id={server_bot_id}` is not valid. You can"
+            "you can query on one of 'bot_type' or"
+            " 'name' or 'server_bot_id'"
+        )
+        values["_query_on"] = ""
         if is_valid_bot_type:
             values["_query_on"] = "bot_type"
-        else:
+        if is_valid_name:
+            # query_on shd not be truthy as we can only query on
+            # 1 parameter
+            if values["_query_on"]:
+                raise ValueError(helpful_multiple_query_error_message)
             values["_query_on"] = "name"
+        if is_valid_server_bot_id:
+            if values["_query_on"]:
+                raise ValueError(helpful_multiple_query_error_message)
+            values["_query_on"] = "server_bot_id"
+        
+        # typecasting bot_type
         if str(bot_type).isnumeric():
             values["bot_type"] = int(bot_type)
+        
         return values
 
 
@@ -113,8 +133,8 @@ def create_BotInDB_from_tuple(data: Tuple[Any, ...]) -> BotInDB:
     """Converts db row returned as tuple to pydantic model"""
 
     """Row Structure
-        (id, name, bot_type, created_at, updated_at)
-        ( 0,    1,        2,          3,          4)"""
+        (id, name, bot_type, created_at, updated_at, server_bot_id)
+        ( 0,    1,        2,          3,          4,             5)"""
 
     # TODO: Handle case when validation fails
 
@@ -122,8 +142,9 @@ def create_BotInDB_from_tuple(data: Tuple[Any, ...]) -> BotInDB:
         id=data[0],
         name=data[1],
         bot_type=data[2],
-        created_at=(data[3]),
-        updated_at=(data[4]),
+        created_at=data[3],
+        updated_at=data[4],
+        server_bot_id=data[5]
     )
 
 
@@ -139,8 +160,8 @@ def create_botInDBInflated_from_tuple(data: Tuple[Any, ...]) -> BotInDBInflated:
     # (but the docs are non-existant, need to check source code )
 
     """Row Structure
-        (id, name, bot_type, created_at, updated_at, bot_type_id, bot_type_name)
-        ( 0,    1,        2,          3,          3,           4,             5)
+        (id, name, bot_type, created_at, updated_at, server_bot_id, bot_type_id, bot_type_name)
+        ( 0,    1,        2,          3,          4,             5,           6,             7)
         ### DIFFERENT FOR DIFFERENT QUERIES
     """
 
@@ -148,7 +169,8 @@ def create_botInDBInflated_from_tuple(data: Tuple[Any, ...]) -> BotInDBInflated:
         id=data[0],
         name=data[1],
         bot_type=data[2],
-        created_at=(data[3]),
-        updated_at=(data[4]),
-        bot_type_name=data[5],
+        created_at=data[3],
+        updated_at=data[4],
+        server_bot_id=data[5],
+        bot_type_name=data[7],
     )
