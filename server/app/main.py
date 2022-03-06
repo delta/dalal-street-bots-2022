@@ -5,6 +5,8 @@ from core.config import get_app_settings
 from core.events import createStartAppHandler, createStopAppHandler
 from fastapi import FastAPI
 
+from api.routes.api import router as ApiRouter
+
 app = FastAPI()
 
 if __name__ == "__main__":
@@ -21,6 +23,7 @@ app = FastAPI(**get_app_settings().fastapi_kwargs())
 app.add_event_handler("startup", createStartAppHandler(app))
 app.add_event_handler("shutdown", createStopAppHandler(app))
 
+app.include_router(ApiRouter, tags=["api"], prefix="/api")
 
 @app.get("/")
 async def read_root() -> Any:
