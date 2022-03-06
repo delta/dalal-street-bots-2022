@@ -1,7 +1,21 @@
 import { Box, Button, FormControl, FormLabel,Text, Grid, Heading, Input, Link, VStack } from '@chakra-ui/react';
 import * as React from 'react';
+import { useState } from 'react';
+import {useNavigate} from 'react-router-dom';
 
-export const Login = () => {
+
+export function LoggingIn(){
+    const[email,setEmail]=useState("");
+    const[password,setPassword]=useState("");
+    const navigate = useNavigate();
+    React.useEffect(() =>{
+        if(localStorage.getItem('user-info'))
+        {
+            navigate("/login")
+        }
+    }, [])
+    
+
     return (
       <div>
       <Grid container direction="column" alignItems="center"justify="center">
@@ -19,11 +33,11 @@ export const Login = () => {
                 </VStack>
                 <FormControl>
                     <FormLabel>E-mail address</FormLabel>
-                    <Input rounded="none" variant="filled" />
+                    <Input rounded="none" variant="filled" type ="text" placeholder="email" onChange={(e)=>setEmail(e.target.value)}/>
                 </FormControl>
                 <FormControl>
                     <FormLabel>Password</FormLabel>
-                    <Input rounded="none" variant="filled" type="password" />
+                    <Input rounded="none" variant="filled" type="password" placeholder="password" onChange={(e)=>setPassword(e.target.value)}/>
                 </FormControl>
                 <Button rounded="none" colorScheme="green">
                     Login
@@ -40,4 +54,6 @@ export const Login = () => {
          
        
     );
-};
+
+}
+
