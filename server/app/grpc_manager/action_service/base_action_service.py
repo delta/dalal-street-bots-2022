@@ -18,6 +18,6 @@ class BaseActionService:
         *args: Any,
         **kwargs: Any,
     ) -> None:
-        self.channel = channel
-        self.action_stub = action_stub
-        self.metadata = metadata
+        self._channel = channel
+        self._action_stub = action_stub
+        self._metadata = metadata

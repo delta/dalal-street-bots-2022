@@ -12,15 +12,15 @@ class BotActionService(BaseActionService):
 
     async def create_bot(
         self, bot_name: str
-    ) -> Tuple[Union[CreateBotResponse, None], Union[Exception, None]]:
+    ) -> Tuple[Union[CreateBotResponse, None], Union[None, Exception]]:
         """Create bot request"""
 
         logging.info(f"trying to create a bot wih name={bot_name}")
         try:
             createBotRequest = CreateBotRequest(bot_user_id=bot_name)
-            resp: CreateBotResponse = await self.action_stub.CreateBot(
+            resp: CreateBotResponse = await self._action_stub.CreateBot(
                 createBotRequest,
-                metadata=self.metadata.get_bot_meta_data(),
+                metadata=self._metadata.get_bot_meta_data(),
             )
 
             if resp.status_code > 0:
