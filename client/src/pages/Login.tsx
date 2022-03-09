@@ -14,6 +14,24 @@ export function LoggingIn(){
             navigate("/login")
         }
     }, [])
+
+   async function Login(){
+        
+        console.warn(email,password)
+        let item = {email,password};
+        let result =await fetch("localhost:3008/login",{
+            method:'POST',
+            headers:{
+               "Content-Type":"application/json" ,
+               "Accept":"application/json"
+            },
+            body:JSON.stringify(item)
+        });
+        result = await result.json();
+        localStorage.setItem("user-info",JSON.stringify(result))
+        navigate("/login") 
+        
+    }
     
 
     return (
@@ -56,4 +74,3 @@ export function LoggingIn(){
     );
 
 }
-
