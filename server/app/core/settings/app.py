@@ -20,6 +20,8 @@ class AppSettings(BaseAppSettings):
     grpc_server_port: int = 8000
     bot_secret: str = "hellobots"
 
+    jwt_secret: str = "secure_secret"
+
     def fastapi_kwargs(self) -> Dict[str, Any]:
         return {
             "debug": self.debug,

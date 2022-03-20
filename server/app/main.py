@@ -6,6 +6,7 @@ from core.events import createStartAppHandler, createStopAppHandler
 from fastapi import FastAPI
 
 from api.routes.api import router as ApiRouter
+from api.routes.auth import router as AuthRouter
 
 app = FastAPI()
 
@@ -24,6 +25,8 @@ app.add_event_handler("startup", createStartAppHandler(app))
 app.add_event_handler("shutdown", createStopAppHandler(app))
 
 app.include_router(ApiRouter, tags=["api"], prefix="/api")
+app.include_router(AuthRouter, tags=["auth"], prefix="/auth")
+
 
 @app.get("/")
 async def read_root() -> Any:

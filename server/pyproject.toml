@@ -21,6 +21,8 @@ asyncio = "^3.4.3"
 loguru = "^0.5.3"
 PyPika = "^0.48.8"
 mypy-protobuf = "^3.2.0"
+PyJWT = "^2.3.0"
+passlib = "^1.7.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
