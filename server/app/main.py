@@ -4,11 +4,22 @@ import uvicorn
 from core.config import get_app_settings
 from core.events import createStartAppHandler, createStopAppHandler
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from api.routes.api import router as ApiRouter
 from api.routes.auth import router as AuthRouter
 
 app = FastAPI()
+
+origins = [get_app_settings().frontend_origin]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if __name__ == "__main__":
     uvicorn.run(

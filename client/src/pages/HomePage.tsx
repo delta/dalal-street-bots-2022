@@ -14,13 +14,15 @@ export const HomePage = () => {
                     <Logo h="40vmin" pointerEvents="none" />
                     <Text>Dalal To The Moon</Text>
                     {/* <Link to="/login"> */}
-                    <Button
-                        rounded="none"
-                        colorScheme="green"
-                        w={['full', 'auto']}
-                    >
-                        <Link to="/login">Login</Link>
-                    </Button>
+                    <Link to="/login">
+                        <Button
+                            rounded="none"
+                            colorScheme="green"
+                            w={['full', 'auto']}
+                        >
+                            Login
+                        </Button>
+                    </Link>
                     {/* </Link> */}
                 </VStack>
             </Grid>

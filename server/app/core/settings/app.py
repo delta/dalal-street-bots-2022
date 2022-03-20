@@ -9,6 +9,8 @@ class AppSettings(BaseAppSettings):
     reload: bool = False
     port: int = 8000
 
+    frontend_origin: str = "http://localhost:3000"
+
     logging_level: int = logging.INFO
 
     docs_url: str = "/docs"
