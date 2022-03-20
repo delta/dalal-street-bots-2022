@@ -9,6 +9,8 @@ class AppSettings(BaseAppSettings):
     reload: bool = False
     port: int = 8000
 
+    frontend_origin: str = "http://localhost:3000"
+
     logging_level: int = logging.INFO
 
     docs_url: str = "/docs"
@@ -17,8 +19,11 @@ class AppSettings(BaseAppSettings):
     redoc_url: str = "/redoc"
     title: str = "Dalal Street Bots"
 
+    grpc_server_origin: str = "localhost"
     grpc_server_port: int = 8000
     bot_secret: str = "hellobots"
+
+    jwt_secret: str = "secure_secret"
 
     def fastapi_kwargs(self) -> Dict[str, Any]:
         return {

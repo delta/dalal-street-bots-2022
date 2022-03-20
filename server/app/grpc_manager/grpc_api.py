@@ -26,10 +26,11 @@ class GrpcManager:
             creds = grpc.ssl_channel_credentials(cert)
             logging.info(
                 f"Trying to connect to grpc server on"
+                f"origin={get_app_settings().grpc_server_origin}"
                 f"port={get_app_settings().grpc_server_port}"
             )
             channel = grpc.aio.secure_channel(
-                "localhost:%d" % get_app_settings().grpc_server_port,
+                f"{get_app_settings().grpc_server_origin}:{get_app_settings().grpc_server_port}",
                 creds,
                 options=(
                     (

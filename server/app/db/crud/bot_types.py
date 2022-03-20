@@ -81,6 +81,23 @@ async def get_all_bot_types(
         return [], e
 
 
+async def check_if_bot_type_with_given_data_exists(
+    con: Cursor, data: Union[int, str]
+) -> bool:
+    """Checks if a bot_type with the given name or id exists"""
+    try:
+        if type(data) == int or data.isnumeric():
+            resp, err = await get_bot_type_with_given_id(con, data)
+        else:
+            resp, err = await get_bot_type_with_given_name(con, data)
+
+        assert not err
+        assert resp
+        return True
+    except AssertionError:
+        return False
+
+
 async def get_bot_type_with_given_name(
     con: Cursor, name: str
 ) -> Tuple[Union[bot_type_schema.BotTypeInDB, None], Union[Exception, None]]:

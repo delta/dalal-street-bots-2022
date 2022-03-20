@@ -13,13 +13,13 @@ class AuthActionService(BaseActionService):
 
     async def login(
         self, email: str, password: str
-    ) -> Tuple[Union[LoginResponse, None], Union[Exception, None]]:
+    ) -> Tuple[Union[LoginResponse, None], Union[None, Exception]]:
         """Login request"""
 
         try:
             loginRequest = LoginRequest(email=email, password=password)
 
-            resp: LoginResponse = await self.action_stub.Login(loginRequest)
+            resp: LoginResponse = await self._action_stub.Login(loginRequest)
 
             if resp.status_code > 0:
                 # Some error occurred, sending resp response
