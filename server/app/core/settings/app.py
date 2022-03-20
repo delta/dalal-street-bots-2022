@@ -17,6 +17,7 @@ class AppSettings(BaseAppSettings):
     redoc_url: str = "/redoc"
     title: str = "Dalal Street Bots"
 
+    grpc_server_origin: str = "localhost"
     grpc_server_port: int = 8000
     bot_secret: str = "hellobots"
 

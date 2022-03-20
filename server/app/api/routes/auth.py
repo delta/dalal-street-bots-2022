@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException, Response
 
 from starlette.status import HTTP_400_BAD_REQUEST
 
@@ -24,6 +24,7 @@ router = APIRouter()
     name="auth:login",
 )
 async def login(
+    response: Response,
     login_request: LoginRequest = Body(...),
     grpc_manager: GrpcManager = Depends(get_grpc_client_stub),
 ) -> LoginResponse:
@@ -38,10 +39,19 @@ async def login(
 
     if not resp or err:
         logging.error(f"Unable to log into dalal {err}")
-        raise invalid_credentials_error from err
+        raise invalid_credentials_error
+
+    if not resp.user.is_admin:
+        logging.error("The user logging in is not admin")
+        raise invalid_credentials_error
+
+    # saving admin meta-data to bot manager
+    grpc_manager.metadata.set_meta_data(bot_id=resp.user.id, session_id=resp.session_id)
+
+    token = auth_handler.encode_token(resp.user.id)
 
     logging.info("successfully logged in user")
-    return LoginResponse(success=True)
+    return LoginResponse(success=True, token=token)
 
 
 @router.get("/me")

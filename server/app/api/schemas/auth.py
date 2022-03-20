@@ -17,3 +17,4 @@ class LoginRequest(BaseModel):
 
 class LoginResponse(BaseModel):
     success: bool = Field(...)
+    token: str = Field(...)
